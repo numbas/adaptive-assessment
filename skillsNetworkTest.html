@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <script src="go-debug.js"></script>
+  <script type="text/javascript" src="SkillNode.js"></script>
+  <script type="text/javascript" src="Group.js"></script>
+  <script type="text/javascript" src="SkillNetwork.js"></script>
+  <script type="text/javascript" src="DrawNetwork.js"></script>
+  <script type="text/javascript" src="Main.js"></script>
+</head>
+<body onload="main()">
+  <div id="network"style="width:1920px; height:1080px; background-color: #DAE4E4;"></div>
+  <p id="input">
+    $marea{tutquest,tut1,tut2,tut3}
+    $marea{numbers,101,102,103,104,105,107,108,109,112,201,202,205,206,215,216,301,302}
+    $marea{powers,106,203,204,303,304,305,306,401,402,403}
+    $marea{basic algebra,110,111,113,207,208,209,210,211,212,213,214}
+    $marea{algebra methods,307,308,311,312,313,404,407,410}
+    $marea{equations,309,310,314,315,316,406,411,412}
+    $marea{algebra+calculus,317,341,342,343,405,408,409,441,442}
+    $marea{statistics,231,232,233,234,334,335}
+    $marea{miscellaneous,221,222,223,321,322,323,324,421,422}
+    $marea{graphs,151,251,351,451,452}
+    $marea{area+volume,161,261,262,263,361,362,363,461,462}
+    $skill{tut1,Tutorial question 1,0,t1}
+    $skill{t1,t1,1,tut1} test one
+    $skill{tut2,Tutorial question 2,0}
+    $skill{tut3,Tutorial question 3,0}
+    $skill{101,Multiplication of negative numbers,1}
+    $skill{102,Multiply negative and positive,1,101}
+    $skill{103,Negative Numbers,1,102,201}
+    $skill{104,Size of decimals,1,201}
+    $skill{105,Decimal places,1,202}
+    $skill{106,Definition of positive powers,1,203,204}
+    $skill{107,Ratios,1,205,206}
+    $skill{108,Factors of an integer,1,107,206,208}
+    $skill{109,Simple fractions,1,216}
+    $skill{110,Collect terms (simple),1,211,312,317}
+    $skill{111,Solving a simple equation,1,212}
+    $skill{112,Simple calculation,1,210,214,215}
+    $skill{113,Evaluating a simple expression,1,214}
+    $skill{151,Coordinates,1,251}
+    $skill{161,Area of a triangle,1,261,262}
+    $skill{201,Use of < and > signs,2,301}
+    $skill{202,Significant figures,2,302}
+    $skill{203,Definition of negative powers,2,302,304,306}
+    $skill{204,Rules for positive powers,2,304}
+    $skill{205,Inverse ratios,2}
+    $skill{206,Cancelling numerical fractions,2,207,216,303}
+    $skill{207,Multiply algebraic fractions,2,307}
+    $skill{208,Factors of algebraic products,2,209}
+    $skill{209,Simple Factorisation,2,309,311,412}        // added 412 to test cycle
+    $skill{210,Expanding one bracket,2,209,312}
+    $skill{211,Collecting terms,2}
+    $skill{212,Solving linear equations,2,309,310,314,315}
+    $skill{213,Transposition of formula,2,315}
+    $skill{214,Evaluating formula,2,316,410}
+    $skill{215,Precedence Rules,2}
+    $skill{216,Add/subtract numerical fractions,2,308}
+    $skill{221,Pythagoras,2,321,322}
+    $skill{222,Definition of sin and cos,2,322,422}
+    $skill{223,Percentages,2,324}
+    $skill{231,Range of a set of numbers,2}
+    $skill{232,Mean of a set of numbers,2}
+    $skill{233,Simple probability (coins),2,334}
+    $skill{234,Venn Diagrams (probability),2,335}
+    $skill{251,Gradient of a straight line,2,351}
+    $skill{261,Area of trapezium,2,363}
+    $skill{262,Area and circumference of a circle,2,361}
+    $skill{263,Similar triangles,2,362}
+    $skill{301,Solution of simple inequalities,3}
+    $skill{302,Scientific Notation,3,401}
+    $skill{303,Simplification of fractions with powers,3,401}
+    $skill{304,Rules for negative powers,3,303,305,402,403}
+    $skill{305,Rules for fractional powers,3}
+    $skill{306,Definition of fractional powers,3,305}
+    $skill{307,Division of algebraic fractions,3}
+    $skill{308,Add/subtract algebraic fractions,3,404,405}
+    $skill{309,Simple Quadratic equations,3}
+    $skill{310,Relation between roots and factors,3}
+    $skill{311,Factorising a quadratic,3,310,407}
+    $skill{312,Expanding two brackets,3,311,313,405,408,410}
+    $skill{313,Difference of squares,3}
+    $skill{314,Simultaneous Equations,3}
+    $skill{315,Unusual linear equation,3,412}
+    $skill{316,Use of quadratic formula,3,411}
+    $skill{317,Complex numbers,3,408}
+    $skill{321,Equation of a circle,3,421}
+    $skill{322,Sin and Cos formula,3}
+    $skill{323,Definition of radians,3}
+    $skill{324,Percentages (advanced),3}
+    $skill{334,Conditional probability,3}
+    $skill{335,Venn Diagrams (conditional prob.),3}
+    $skill{341,Differentiation of powers,3,342,441,442}
+    $skill{342,Finding Max/Min of a quadratic,3}
+    $skill{343,Geometric Progression,3}
+    $skill{351,Equation of a straight line,3,451,452}
+    $skill{361,Volume of cylinder,3,461}
+    $skill{362,Area/Length relationship,3,462}
+    $skill{363,Area of irregular shapes,3}
+    $skill{401,Simplify with scientific notation,4}
+    $skill{402,Logs,4}
+    $skill{403,Arbitrary factors,4}
+    $skill{404,L.c.d. of an algebraic fraction,4}
+    $skill{405,Identification of common errors,4}
+    $skill{406,Solve quad. by comp. the square,4}
+    $skill{407,Quadratics - completing the square,4,406}
+    $skill{408,Multiplication of complex numbers,4}
+    $skill{409,Divide by zero (possible solution),4}
+    $skill{410,Substituting into a formula,4}
+    $skill{411,Solutions of a quadratic,4,409}
+    $skill{412,Difficult linear equation,4,208}
+    $skill{421,Deduce radius of circle,4}
+    $skill{422,Sin and Cos as functions,4}
+    $skill{441,Product rule,4}
+    $skill{442,Integration of powers,4}
+    $skill{451,Recognise formula of quad. graph,4}
+    $skill{452,Recognise formula of recip. graph,4}
+    $skill{461,Surface area of a cylinder,4}
+    $skill{462,Volume Area Length relationships,4}
+  </p>
+</body>
+</html>
