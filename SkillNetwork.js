@@ -182,4 +182,131 @@ class SkillNetwork {
         edges: edges,
       }
     }
+
+    // alternate method of finding cycles, also incompletes
+    // static findCycles(net) {
+    //   let subGroups = net.subGroups
+    //   let map = net.nodesMap
+    //
+    //   for (let g of subGroups) {
+    //     let nodeCanReach = new Map()
+    //     // let visited = new Set()
+    //
+    //     for (let n of g) {
+    //       if (map.has(n) && !nodeCanReach.has(n)) {
+    //         SkillNetwork.getCycleInfo(map, nodeCanReach, n)
+    //       }
+    //     }
+    //     console.log(nodeCanReach);
+    //   }
+    // }
+    //
+    //
+    // static getCycleInfo(map, nodeCanReach, tag) {
+    //   let current = map.get(tag)
+    //   if (map.has(tag) && !nodeCanReach.has(tag)) {
+    //     nodeCanReach.set(tag, current.forwardsLink)
+    //   }
+    //
+    //   // else if (map.has(tag) && nodeCanReach.has(tag)) {
+    //   //   console.log(nodeCanReach.get(tag));
+    //   //   nodeCanReach.set(tag, SkillNetwork.collect(current.forwardsLink, nodeCanReach.get(tag)))
+    //   //   console.log(nodeCanReach.get(tag));
+    //   // }
+    //
+    //   for (let flink of current.forwardsLink) {
+    //     if (map.has(flink) && nodeCanReach.has(flink)) {
+    //       console.log(nodeCanReach);
+    //       console.log(current);
+    //       console.log(flink);
+    //       console.log(nodeCanReach.get(flink));
+    //       nodeCanReach.set(tag, SkillNetwork.collect(nodeCanReach.get(tag), nodeCanReach.get(flink)))
+    //     } else if (map.has(flink) && !nodeCanReach.has(flink)) {
+    //       SkillNetwork.getCycleInfo(map, nodeCanReach, flink)
+    //       nodeCanReach.set(tag, SkillNetwork.collect(nodeCanReach.get(tag), nodeCanReach.get(flink)))
+    //     }
+    //   }
+    //
+    //   for (let blink of current.backwardsLink) {
+    //     // console.log(nodeCanReach.has(blink));
+    //     if (nodeCanReach.has(blink)) {
+    //       console.log("cycle has " + blink)
+    //     } else {
+    //       if (map.has(blink)) {
+    //         SkillNetwork.getCycleInfo(map, nodeCanReach, blink)
+    //       }
+    //     }
+    //   }
+    // }
+
+    // Does not work correctly and the Tarjan algorithm does not
+    static tarjan(net) {
+      let graph = net.getGraph()
+      let verticies = graph.verticies
+      let edges = graph.edges  // gives a list of link objects with from and to fields
+      let map = net.nodesMap
+      // let verticies = map.keys()
+
+      let allStrong = new Set()
+
+      let index = {i: 0}  //object so changes to i persists after calls to strong connected
+      let s = []
+      let visited = new Map()   // visited maps tag to object with info like index, lowindex and onstack
+
+      for (let v of verticies) {
+        if (!visited.has(v)) {
+          allStrong.add(SkillNetwork.strongConnected(map, edges, visited, v, s, index))
+        }
+      }
+
+      console.log(allStrong);
+      // console.log(s);
+
+      console.log(visited);
+      return allStrong
+    }
+
+    static min(n, m) {
+      return (n < m) ? n : m
+    }
+
+    static strongConnected(map, edges, visited, current, s, index) {
+      visited.set(current, {index: index.i, lowlink: index.i, onStack: true})
+      index.i = index.i + 1
+      s.push(current)
+
+      for (let edge of edges) {
+        // may need if edge if from or too current
+        if (edge.from === current && map.has(edge.to)) {      // may need to add if node with tag to is in verticies
+          let from = edge.from   // same as current
+          let to = edge.to
+          // console.log(from + " -> " + to);
+          // console.log(s);
+
+          if (!visited.has(to)) {
+            SkillNetwork.strongConnected(map, edges, visited, to, s, index)
+            visited.get(from).lowlink = SkillNetwork.min(visited.get(from).lowlink, visited.get(to).lowlink)
+          } else if (s.includes(to)) {
+            visited.get(from).lowlink = SkillNetwork.min(visited.get(from).lowlink, visited.get(to).index)
+          }
+        }
+      }
+
+      if (visited.get(current).lowlink === visited.get(current).index) {
+        // new strongly connected component
+        let stronglyConnected = new Set()
+        // let i = s.length - 1
+        // console.log(s);
+        let w = s[s.length - 1]
+        do {
+          w = s.pop()
+          visited.get(w).onStack = false
+          stronglyConnected.add(w)
+          // i--
+        } while (w != current)
+          // add w to strongly connected component
+        return stronglyConnected
+        //return the strongly connected component
+      }
+    }
 }
