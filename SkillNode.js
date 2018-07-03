@@ -1,8 +1,8 @@
 class SkillNode {
   constructor(tag, description, level) {
-    this.tag = tag
+    this.tag = tag.replace(space, "")
     this.description = description
-    this.level = level
+    this.level = level.replace(space, "")
     this.forwardsLink = new Set()
     this.backwardsLink = new Set()
   }

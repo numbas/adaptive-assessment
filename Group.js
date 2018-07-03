@@ -1,7 +1,10 @@
 class Group {
   constructor(name, tags) {
+    this.tags = new Set()
+    for (let tag of tags) {
+      this.tags.add(String(tag).replace(space, ""))
+    }
     this.name = name
-    this.tags = tags
   }
 
   toString() {
