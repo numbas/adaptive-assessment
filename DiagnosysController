@@ -1,0 +1,17 @@
+class DiagnosysController extends ExamController {
+  constructor(data) {
+    super()
+    this.network =
+    this.level =
+    this.questionsMap =
+  }
+  
+  nextQuestion() {
+  }
+  
+  result(question, score) {
+  }
+  
+  transcript() {
+  }
+}

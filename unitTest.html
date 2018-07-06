@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
+  <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.6.1.css">
   <script src="go-debug.js"></script>
   <script type="text/javascript" src="SkillNode.js"></script>
   <script type="text/javascript" src="Group.js"></script>
@@ -10,6 +11,9 @@
   <script defer type="text/javascript" src="unitTest.js"></script>
 </head>
 <body id="page">
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="https://code.jquery.com/qunit/qunit-2.6.1.js"></script>
   <script type="text/network">
     skill{1,node 1,0}
   </script>
@@ -41,4 +45,17 @@
     skill{3,node 3,0,1,2,4}
     skill{4,node 4,0,1,2,3}
   </script>
+  <script type="text/network">
+    skill{1,node 1,0,2}
+    skill{2,node 2,0}
+    skill{3,node 3,0,4}
+    skill{4,node 4,0}
+  </script>
+  <script type="text/network">
+    skill{1,node 1,0,2}
+    skill{2,node 2,0,1}
+    skill{3,node 3,0,4}
+    skill{4,node 4,0,3}
+  </script>
+  
 </body>

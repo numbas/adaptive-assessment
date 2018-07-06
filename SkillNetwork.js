@@ -37,20 +37,45 @@ class SkillNetwork {
 }
 
 function initNetwork(defenitions) {
-  let lines = defenitions.split("\n")
-  let net = createNetwork(lines)
+  let net = createNetwork(defenitions)
   net.name = "Complete Network"
+  let cycles = findCycles(net)
+  if (cycles.size !== 0) {
+    console.log(cycles)
+    throw "cycles"
+  }
   return net
 }
 
-function createNetwork(inputArray) {
+function createNetwork(defenitions) {
+  let input = defenitions.split("\n")
   let nodes = new Set()
   let groups = new Map()
   let nodesMap = new Map()
   let linksMap = new Map()    // used to complete back links without re iterating over nodes.
+  
+  function addForwardsLinks(node, linksArray) {
+    let tag = node.tag
+    let forwardsLink = new Set()
+    let i = 0
 
-  for (let i = 0; i < inputArray.length; i++) {
-    let stringMatch = regex.exec(inputArray[i])
+    while (i < linksArray.length) {
+      let link = linksArray[i].replace(space, "")   // removes spaces from tags
+      forwardsLink.add(link)
+
+      if (linksMap.has(link)) {
+        linksMap.set(link, linksMap.get(link).add(tag))
+      } else {
+        linksMap.set(link, new Set([tag]))
+      }
+      i++
+    }
+
+    return forwardsLink
+  }
+  
+  for (let i = 0; i < input.length; i++) {
+    let stringMatch = regex.exec(input[i])
     if (stringMatch !== null && stringMatch.length > 1) {
       let rowType = stringMatch[1]
       let rowData = stringMatch[2].split(",")
@@ -83,26 +108,6 @@ function createNetwork(inputArray) {
     nodesMap: nodesMap,
     groups: groups,   // used to filter network
   })
-
-  function addForwardsLinks(node, linksArray) {
-    let tag = node.tag
-    let forwardsLink = new Set()
-    let i = 0
-
-    while (i < linksArray.length) {
-      let link = linksArray[i].replace(space, "")   // removes spaces from tags
-      forwardsLink.add(link)
-
-      if (linksMap.has(link)) {
-        linksMap.set(link, linksMap.get(link).add(tag))
-      } else {
-        linksMap.set(link, new Set([tag]))
-      }
-      i++
-    }
-
-    return forwardsLink
-  }
 }
 
 // not the same as union because it mutates the first parameter
@@ -117,16 +122,7 @@ function findSubGroups(network) {
   let nodesMap = network.nodesMap
   let subGroups = new Set()
   let nodesVisited = new Set()
-
-  for (let node of nodes) {
-    if (nodes.has(node) && !nodesVisited.has(node.tag)) {
-      let subGroup = new Set()
-      makeSubGroup(node, subGroup)
-      subGroups.add(subGroup)
-    }
-  }
-
-  return subGroups
+  let missingNodes = new Set()
 
   function makeSubGroup(node, subGroup) {
     if (nodesVisited.has(node.tag)) {
@@ -146,19 +142,57 @@ function findSubGroups(network) {
 
       //DEBUG can be used to report missing nodes
       if (!nodesMap.has(tag)) {
-        console.log("node: " + tag + " is missing ")
+        missingNodes.add(tag)
       }
     }
   }
+  
+  for (let node of nodes) {
+    if (nodes.has(node) && !nodesVisited.has(node.tag)) {
+      let subGroup = new Set()
+      makeSubGroup(node, subGroup)
+      subGroups.add(subGroup)
+    }
+  }
+  
+  console.log("Missing nodes: ", JSON.stringify([...missingNodes]))
+  return subGroups
 }
 
-  // returns a new SkillNetwork containing only nodes in the groups given
+function collectGroups(groups) {
+  let name = ""
+  let tags = new Set()
+  for (let group of groups) {
+    name += "[" + group.name + "]+"
+    collect(tags, group.tags)
+  }
+
+  name = name.substring(0, name.length - 1)
+  
+  return new Group(name, tags)
+}
+
+function groupByLevel(levels, network) {
+  let tags = new Set()
+  let nodes = network.nodes
+  
+  for (let node of nodes) {
+    if (levels.includes(Number(node.level))) {
+      tags.add(node.tag)
+    }
+  }
+  
+  return new Group("levels " + levels, tags)
+}
+
+// returns a new SkillNetwork containing only nodes in the groups given
 function filterNodes(groups, network) {
   let nodesMap = network.nodesMap
   let name = ""
   let newGroups = new Map()
   let newNodesMap = new Map()
-
+  let missingNodes = new Map()
+  
   for (let group of groups) {
     name += "[" + group.name + "]+"
     newGroups.set(group.name, group)
@@ -169,11 +203,16 @@ function filterNodes(groups, network) {
       }
       // DEBUG can be used to repoort nodes not in network
       else {
-        console.log("no node with tag: " + tag)
+        if (missingNodes.has(group.name)) {
+          missingNodes.get(group.name).push(tag)
+        } else {
+          missingNodes.set(group.name, [tag])
+        }
       }
     }
   }
-
+  
+  console.log("Group contains non-existent nodes", JSON.stringify([...missingNodes]))
   name = name.substring(0, name.length - 1)
 
   return new SkillNetwork({
@@ -211,21 +250,10 @@ function findAllSCC(net) {
   let verticies = graph.verticies
   let edges = graph.edges
   let map = net.nodesMap
-
   let allStrong = new Set()
-
   let i = 0
   let stack = []
   let visited = new Map()   // visited maps tag to object with info like index, lowindex and onstack
-
-
-  for (let v of verticies) {
-    if (!visited.has(v)) {
-      findSCC(v)
-    }
-  }
-
-  return allStrong
 
   function findSCC(current) {
     visited.set(current, {index: i, lowlink: i, onStack: true})
@@ -259,4 +287,26 @@ function findAllSCC(net) {
       allStrong.add(stronglyConnected)
     }
   }
+
+  for (let v of verticies) {
+    if (!visited.has(v)) {
+      findSCC(v)
+    }
+  }
+
+  return allStrong
+}
+
+function setToArray(set) {
+  let array = []
+  
+  for (let item of set) {
+    if (item instanceof Set) {
+      array.push(setToArray(item))
+    } else {
+      array.push(item)
+    }
+  }
+  
+  return array.sort()
 }
