@@ -13,33 +13,33 @@ class MapleController extends ExamController {
     this.dropOnTotal = dropOnTotal      // boolean to choose whether drop happens with total or consecutive incorrect
     
     this.totalNumOfQs = 0
+    let temp = []
     for (let branch of branches) {
       this.totalNumOfQs += branch.length
+      temp.push(branch)
     }
-    
+    console.log(branches)
+    console.log(temp)
+
     let correctPerLevel = []
     let incorrectPerLevel = []
     let currentQPerBranch = []
-    let skipBranches = []
+    // let skipBranches = []
     
     for (let i = 0; i < branches.length; i++) {
       currentQPerBranch.push(0)
       correctPerLevel.push(0)
       incorrectPerLevel.push(0)
-      skipBranches.push(false)
-    }
-    
-    for (let b of this.branches) {
-      console.log(b)
+      // skipBranches.push(false)
     }
     
     this.state = {
-      branches: branches,
+      branches: temp,
       branchWeights: branchWeights,
       questionNum: 0,
       currentBranch: startBranch,  // this will be the index in the array
       currentQPerBranch: currentQPerBranch,
-      skipBranches: skipBranches,    // true if all questions have already been answered in branch
+      // skipBranches: skipBranches,    // true if all questions have already been answered in branch
       correctTotal: 0,
       correctPerLevel: correctPerLevel,
       correctConsecutive: 0,
@@ -50,19 +50,13 @@ class MapleController extends ExamController {
     }
   }
   
-  nextQuestion() { 
+  nextQuestion() {
     if (this.isEnd()) {
       return null
     } else {
       let state = this.state
-      // need condition to check if there are enough questions in a level before climbing or dropping
-      // (state.currentQPerBranch[state.currentBranch] < this.branches[state.curentBranch].length)
       let question = state.branches[state.currentBranch][state.currentQPerBranch[state.currentBranch]]
       state.currentQPerBranch[state.currentBranch] += 1
-      // console.log(question)
-      // if (state.currentQPerBranch[state.currentBranch] >= this.branches[state.curentBranch].length) {
-      //   state.skipBranches[state.currentBranch] = true
-      // }
       state.questionNum += 1
       return question
     }
@@ -77,9 +71,9 @@ class MapleController extends ExamController {
     
     if (this.climbOnTotal) {
       // this may be incorrect behaviour
-      climbBranch = (this.branches.length > state.currentBranch) && (state.correctPerLevel[state.currentBranch] >= this.numToClimb)
+      climbBranch = (state.branches.length > state.currentBranch) && (state.correctPerLevel[state.currentBranch] >= this.numToClimb)
     } else {
-      climbBranch = (this.branches.length > state.currentBranch) && (state.correctConsecutive >= this.numToClimb)
+      climbBranch = (state.branches.length > state.currentBranch) && (state.correctConsecutive >= this.numToClimb)
     }
     
     if (this.dropOnTotal) {
@@ -89,52 +83,15 @@ class MapleController extends ExamController {
       state.
       dropBranch = (0 < state.currentBranch) && (state.incorrectConsecutive >= this.numToDrop)
     }
-    
-    // if (this.hasLevelToReach(climbBranch, false)) {
-    //   state.currentBranch += 1
-    // } else if (this.hasLevelToReach(false, dropBranch)) {  // maybe wrong // also either climb or drop branch, cant do both
-    //   state.currentBranch -= 1
-    // }
+
     if (climbBranch) {
       state.correctConsecutive = 0
       state.currentBranch += 1
     } else if (dropBranch) {
       state.incorrectConsecutive = 0
       state.currentBranch -= 1
-    }
-    
-    // console.log(state)
+    }    
   }
-  
-  // used to solve the problem of running out of questions to ask in branch or which branch to jump to next
-  // could be easier to remove branch from potential questions to ask and update currentBranch accordinglys
-  // hasLevelToReach(planToClimb, planToDrop) {
-  //   let state = this.state
-  //   // from current branch search whether you can move up or down
-  //   if (planToClimb) {
-  //     let i = state.currentBranch
-  //     while (i < state.skipBranches.length && state.skipBranches[i]) {
-  //       i++
-  //     }
-  //     if (i === state.skipBranches.length) {
-  //       // climb down because there are no questions above or stay on current level if not all Qs have been answered
-  //       return false
-  //     } else {
-  //       return true
-  //     }
-  //   } else if (planToDrop) {
-  //     let i = state.currentBranch
-  //     while (i > state.skipBranches.length && state.skipBranches[i]) {
-  //       i--
-  //     }
-  //     if (i === 0) {
-  //       // climb up because there are no questions below or stay on current level if not all Qs have been answered
-  //       return false
-  //     } else {
-  //       return true
-  //     }
-  //   }
-  // }
   
   getScore(question, answerIsCorrect) {
     let state = this.state
@@ -147,12 +104,14 @@ class MapleController extends ExamController {
       state.incorrectConsecutive = 0
       score = state.branchWeights[state.currentBranch]
       
-      // if (state.currentQPerBranch[state.currentBranch] >= this.branches[state.curentBranch].length) {
-      if (state.currentQPerBranch[state.currentBranch] >= state.branches[state.currentBranch].length) {  // checks if there are any questions left to ask in a branch
-        state.branches.splice(state.currentBranch)
-        state.branchWeights.splice(state.currentBranch)
+      if (state.currentQPerBranch[state.currentBranch] >= state.branches[state.currentBranch].length) {  // checks if there are any questions left to ask in a branch        
+        state.branches.splice(state.currentBranch, 1)
+        state.branchWeights.splice(state.currentBranch, 1)
+        state.correctConsecutive = 0  // may be incorrect behaviour
         if (state.currentBranch >= state.branches.length) {  // checks if the branch is the last branch
+          console.log(state.branches)
           state.currentBranch -= 1
+
         }
       }
     } else {
@@ -162,9 +121,11 @@ class MapleController extends ExamController {
       state.correctConsecutive = 0
       
       if (state.currentQPerBranch[state.currentBranch] >= state.branches[state.currentBranch].length) {  // checks if there are any questions left to ask in a branch
-        state.branches.splice(state.currentBranch)
-        state.branchWeights.splice(state.currentBranch)
-        if (state.currentBranch !== 0) {  // checks if the branch is the last branch
+        state.branches.splice(state.currentBranch, 1)
+        state.branchWeights.splice(state.currentBranch, 1)
+        state.incorrectConsecutive = 0  // may be incorrect behaviour
+
+        if (state.currentBranch !== 0) {  // checks if the branch is the first branch
           state.currentBranch -= 1
         }
       }
@@ -193,9 +154,6 @@ class MapleController extends ExamController {
   
   isEnd() {
     let state = this.state
-    
-    // console.log(state.questionNum)
-    // currently incorrect because the student will still be asked the last question but its answer will not be recorded
     if ((state.branches.length === 0) || (state.questionNum >= this.totalNumOfQs) || (state.questionNum > this.numOfQs) || (state.correctTotal >= this.numOfCorrectToEnd) || (state.incorrectTotal >=this.numOfIncorrectToEnd)) {
       return true
     } else {

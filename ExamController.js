@@ -31,16 +31,16 @@ class ExamController {
   }
 }
 
-function test(examController) {
-  console.log(examController)
-  let answerIsCorrect = true
-  while (!examController.isEnd()) {
-    let question = examController.nextQuestion()
-    let score = examController.getScore(question, answerIsCorrect)
-    examController.storeResult(question, score)
-  }
-  return examController.transcript()
-}
+// function test(examController) {
+//   console.log(examController)
+//   let answerIsCorrect = true
+//   while (!examController.isEnd()) {
+//     let question = examController.nextQuestion()
+//     let score = examController.getScore(question, answerIsCorrect)
+//     examController.storeResult(question, score)
+//   }
+//   return examController.transcript()
+// }
 
 // can add some UI elements which call the function below to progress test
 function interactiveTest(examController, answerIsCorrect) {
@@ -51,6 +51,28 @@ function interactiveTest(examController, answerIsCorrect) {
   } else {
     return examController.transcript()
   }
+}
+
+function test(examController, array) {
+  let transcript = 0
+  let i = 0
+  while (!examController.isEnd() && (i < array.length)) {
+    let question = examController.nextQuestion()
+    let score = examController.getScore(question, array[i])
+    examController.storeResult(question, score)
+    i++
+  }
+  
+  return examController.transcript()
+}
+
+function simulatedTest(examController, student) {
+  while (!examController.isEnd()) {
+    let question = examController.nextQuestion()
+    let score = examController.getScore(question, student.isCorrect(question))
+    examController.storeResult(question, score)
+  }
+  return examController.transcript()
 }
 
 

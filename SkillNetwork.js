@@ -94,15 +94,20 @@ function createNetwork(defenitions) {
     }
   }
 
-  // fills back links and maps tags to nodes
+  // fills back links and maps tags to nodes and creates all skills group
+  let allSkills = new Set()
   for (let node of nodes) {
+    allSkills.add(node.tag)
+    
     if (linksMap.has(node.tag)) {
       node.backwardsLink = linksMap.get(node.tag)
     }
 
     nodesMap.set(node.tag, node)
   }
-
+  
+  groups.set("allSkills", new Group("allSkills", allSkills))
+  
   return new SkillNetwork ({
     nodes: nodes,
     nodesMap: nodesMap,
