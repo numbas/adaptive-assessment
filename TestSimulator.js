@@ -1,116 +1,305 @@
- /*
- init test with set of true/falses generated randomly or randomly generate t/f after every question
- use a constant P(correct) to choose correct or incorrect (this wouldnt be accurate for a student)
- 
- for each student for each skill assign p(correct) ( can be done by level and groups)
- also allow some skills to always be correct or incorrect
- 
- 
- estimate ability of each skill should be close to the actual probabilities per skill for each student
+let networkDefs = document.querySelectorAll('script[type="text/network"]')
+let size = {height: 1000, width: 1500}
+let net = initNetwork(networkDefs[0].textContent)
+let pageid = "page"
+let chartSize = {width: 400, height: 300}
+let colours = [
+  'rgba(255, 99, 132, 0.4)',
+  'rgba(54, 162, 235, 0.4)',
+  'rgba(255, 206, 86, 0.4)',
+  'rgba(75, 192, 192, 0.4)',
+  'rgba(153, 102, 255, 0.4)',
+  'rgba(255, 159, 64, 0.4)'
+  ]
+let sLevel = 1
+let eLevel = 4
+let students = []
+let tests = []
+
+/* Returns a random integer from min to max inclusivley
  */
-
-class Student {
-  // it may be a good idea to include a variable to control the accuracy of the simulation, e.g all Qs have same P, use sillyMistakes, use levels to affect PofSkills ...
-
-  // pOfSilly mistakes should probably constant for all Qs 
-  // probably not true (Qs at or below level should have p(correct) = 1, if start level is true)
-  // if pLower, pSame, pHigher or definedPs are not defined default values which create ps between 1 and 0 will be used
-  constructor(nodesMap, startLevel, pOfSillyMistakes, definedPs, pLower, pSame, pHigher) {
-    if (!(definedPs instanceof Array)) {
-      definedPs = []
-    }
-    if (!(pLower instanceof Number)) {
-      pLower = 0
-    }
-    if (!(pSame instanceof Number)) {
-      pSame = pLower
-    }
-    if (!(pHigher instanceof Number)) {
-      pHigher = 1
-    }
-    
-    this.startLevel = startLevel
-    this.nodesMap = nodesMap
-    this.pOfSillyMistakes = pOfSillyMistakes
-    this.pLower = pLower
-    this.pSame = pSame
-    this.pHigher = pHigher
-    this.skillsP = this.assignP(startLevel, definedPs)  // this would be a map from skill tag to p(Correct) for that skill
-  }
-
-  // student.assignP can be used again to simulate test at different levels, or change defined Ps
-  // this would be equivalent to creating a new student with pOfSillyMistakes, pSame, pLower and pHigher the same
-  assignP(startLevel, definedPs) {
-    let skillTags = [...this.nodesMap.keys()]
-    let skillsP = new Map()
-    
-    for (let tag of skillTags) {
-      let level = this.nodesMap.get(tag).level
-      let max = 1
-      let min = 0
-      
-      if (level < startLevel) {
-        // p for skill should be at least pLower
-        min = this.pLower
-      } else if (level > startLevel) {
-        // p for skill should be no more than pHigher
-        max = this.pHigher
-      } else if (level === startLevel) {
-        // p for skill should at least pSame
-        min = this.pSame
-      }
-      
-      skillsP.set(tag, Math.random() * (max - min) + min)
-    }
-    
-    for (let pair of definedPs) {
-      skillsP.set("" + pair[0], pair[1])
-    }
-    
-    return skillsP
-  }
-  
-  isCorrect(tag) {
-    let pCorrect = this.skillsP.get(tag) * (1 - this.pOfSillyMistakes)
-    return Math.random() <= pCorrect
-  }
-}
-// student can be tested multiple times and new student has different P(Correct) values, and pOfSillyMistakes
-
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (Math.floor(max - min)) + min)
 }
 
-let networkDefs = document.querySelectorAll('script[type="text/network"]')
-let size = {height: 1000, width: 1500}
-let net = initNetwork(networkDefs[0].textContent)
-drawGraph(net, size)
-
-// let student = new Student(net.nodesMap, 1, 0.1, [[101, 1], [402, 0.2]], 0.2, 0.2, 0.02)
-// console.log(student)
-
-let students = []
-let transcripts = []
-let numToTest = 100
-
-for (let i = 0; i < numToTest; i++) {
-  let level = getRandomInt(1, 5)
-  students.push(new Student(net.nodesMap, level, Math.random()))  
-  transcripts.push(simulatedTest(new DiagnosysController(net, [net.groups.get("allSkills")], level), students[i]))
+/* Returns a decimal number rounded to the nearest numOfDps
+ * numOfDps: number
+ * x: number
+ */
+function roundToNearest(numOfDps, x) {
+  let factor = Math.pow(10, numOfDps)
+  return Math.round(factor * x) / factor
 }
 
-for (let i = 0; i < numToTest; i++) {
-  students[i].skillsP = [...students[i].skillsP]
-  // students[i].nodesMap = [...students[i].nodesMap]
-  transcripts[i].state = [...transcripts[i].state]
-  transcripts[i].scores = [...transcripts[i].scores]
+/* Appends Student objects, covering all intervals between all probabilities and levels, to the student array in this file
+ * startLevel: number
+ * endLevel: number
+ * pCorrectStart: number
+ * pCorrectEnd: number
+ * pCorrectInterval: number
+ * pMistakeStart: number
+ * pMistakeEnd: number
+ * pMistakeInterval: number
+ * pFlukeStart: number
+ * pFlukeEnd: number
+ * pFlukeInterval: number
+ */
+function generateStudents(startLevel, endLevel, pCorrectStart, pCorrectEnd, pCorrectInterval, pMistakeStart, pMistakeEnd, pMistakeInterval, pFlukeStart, pFlukeEnd, pFlukeInterval) {
+  let students = []
+  let numOfDps = 10    // so floats are correct to 10dp
+  if (typeof pCorrectInterval !== "number" || pCorrectInterval === 0) {    // infinite loop if 0
+    pCorrectInterval = 0.1
+  }
+  if (typeof pMistakeStart !== "number") {
+    pMistakeStart = 0
+  }
+  if (typeof pMistakeEnd !== "number") {
+    pMistakeEnd = 0
+  }
+  if (typeof pMistakeInterval !== "number" || pMistakeInterval === 0) {   // infinite loop if 0
+    pMistakeInterval = 0.1
+  }
+  if (typeof pFlukeStart !== "number") {
+    pFlukeStart = 0
+  }
+  if (typeof pFlukeEnd !== "number") {
+    pFlukeEnd = 0
+  }
+  if (typeof pFlukeInterval !== "number" || pFlukeInterval === 0) {   // infinite loop if 0
+    pFlukeInterval = 0.1
+  }
   
-  console.log(students[i], transcripts[i])
+  for (let level = startLevel; level <= endLevel; level++) {
+    let pCorrect = pCorrectStart
+
+    while (pCorrect <= pCorrectEnd) {
+      let pMistake = pMistakeStart
+
+      while (pMistake <= pMistakeEnd) {
+        let pFluke = pFlukeStart
+        
+        while (pFluke <= pFlukeEnd) {
+          students.push(new Student(net.nodesMap, level, pCorrect, {pMistake: pMistake, pFluke: pFluke}))
+          
+          pFluke = roundToNearest(numOfDps, pFluke + pFlukeInterval)
+        }
+ 
+        pMistake = roundToNearest(numOfDps, pMistake + pMistakeInterval)
+      }
+
+      pCorrect = roundToNearest(numOfDps, pCorrect + pCorrectInterval)
+    }
+  }
+  
+  return students
 }
 
-let t = JSON.stringify(students) + JSON.stringify(transcripts)
-console.log(t)
+/* Returns test data based on the type of test and controller used for all students each numOfStudentsPerTest times
+ * numOfStudentsPerTest: number, The number of times to test the student, to increase the amount of test data on the same students
+ * students: Array(Student)
+ * controllerName: string, Used to choose the exam controller the tests should use, currently "diagnosys" or "diagnosysV1"
+ * testType: string, Used to choose the what student data to use to complete a test, currrently "constantP", which uses the students probabilities, and "determinedAns", which uses the networks inferences as well
+ */
+function testStudents(numOfStudentsPerTest, students, controllerName, testType) {
+  /* Returns an exam controller named for the given student
+   * controllerName: string, Used to choose the exam controller the tests should use, currently "diagnosys" or "diagnosysV1"
+   * student: Student
+   */
+  function getExamController(controllerName, student) {
+    let examController = null
+    switch (controllerName) {
+      case "diagnosys":
+        examController = new DiagnosysController(net, [net.groups.get("allSkills")], student.startLevel)
+        break
+      case "diagnosysV1":
+        examController = new DiagnosysControllerV1(net, [net.groups.get("allSkills")], student.startLevel, 4, 4)
+        break
+    }
+    
+    return examController
+  }
+  
+  /* Returns test data on students when student answers questions correctly with the probabilities defined in their Student object
+   * The test data is of the form {
+   *  pCorrect: number 
+   *  noise: {
+   *    pFluke: number
+   *    pMistake: number
+   *  }, 
+   *  askedQs: Array(string)
+   *  startLevel: number
+   *  endLevel: number
+   *  transcriptState: Map(string -> string)
+   * }
+   */
+  function constantPTest() {
+    let testData = []
+    
+    for (let student of students) {
+      let numOfStudentsTested = 0
+      while (numOfStudentsTested < numOfStudentsPerTest) {
 
-let page = document.getElementById("page")
-let div = "<p>" + t + "<p>"
-page.insertAdjacentHTML('beforeend', div)
+        let transcript = simulatedTest(getExamController(controllerName, student), student)
+        
+        testData.push({
+          pCorrect: student.pCorrect,
+          noise: student.noise,
+          askedQs: transcript.askedQs,
+          startLevel: student.startLevel,
+          endLevel: transcript.endLevel,
+          transcriptState: transcript.state,
+        })
+        
+        numOfStudentsTested++
+      }
+    }
+    
+    return testData
+  }
+  
+   /* Returns test data on students when student answers questions correctly based on the inferences made if they know a skill, e.g. if a skill is present infer that its pre requisites are also present, if not then infer that forward linked skills are also not present
+   * The test data is of the form {
+   *  pCorrect: number 
+   *  noise: {
+   *    pFluke: number
+   *    pMistake: number
+   *  }, 
+   *  askedQs: Array(string)
+   *  startLevel: number
+   *  endLevel: number
+   *  comparedState: Map(string -> boolean), A Map of skills tags to true/false, which are true if the skills states in the transcript match the infered skills present in studentSkills
+   *  transcriptState: Map(string -> string)
+   *  studentSkills: Map(string -> boolean), A Map of skills tags to true/false, created by assignSkillsCorrect in Student.js, which indicates a student has a skill if true
+   * }
+   */
+  function determinedAnswerTest() {
+    let testData = []
+
+    for (let student of students) {
+      let numOfStudentsTested = 0  // doesnt make sense to do this here, because skills Y/N is set and unchanged
+      while (numOfStudentsTested < numOfStudentsPerTest) {
+        let comparedState = new Map()
+        let skillsCorrect = student.assignSkillsCorrect(student.startLevel)
+        let transcript = simulatedTest(getExamController(controllerName, student), student, skillsCorrect)
+        let state = transcript.state
+        
+        
+        for (let tag of [...skillsCorrect.keys()]) {
+          let stateTag = state.get(tag)
+          let skillState = false
+          
+          if (stateTag === "pyes" || stateTag === "yes") {
+            skillState = true
+          } else if (stateTag === "pno" || stateTag === "no") {
+            skillState = false
+          }
+          
+          comparedState.set(tag, skillState === skillsCorrect.get(tag))
+        }
+        
+        
+        testData.push({
+          pCorrect: student.pCorrect,
+          noise: student.noise,
+          askedQs: transcript.askedQs,
+          startLevel: student.startLevel,
+          endLevel: transcript.endLevel,
+          comparedState: comparedState,
+          transcriptState: transcript.state,
+          studentSkills: skillsCorrect,
+        })
+        
+        numOfStudentsTested++
+      }
+    }
+    
+    return testData
+  }
+  
+  if (testType === "constantP") {
+    return constantPTest()
+  } else if (testType === "determinedAns") {
+    return determinedAnswerTest() 
+  }
+}
+
+/* Resets student data
+ * Used for UI button
+ */
+function resetStudentData() {
+  students = []
+  alert("student data reset")
+}
+
+/* Resets test data
+ * Used for UI button
+ */
+function resetTestData() {
+  tests = []
+  alert("test data reset")
+}
+
+/* Generates student data
+ * Used for UI button
+ */
+function addStudentData() {
+  let startLevel = Number(document.getElementById("startLevel").value)
+  let endLevel = Number(document.getElementById("endLevel").value)
+  let pCorrectStart = Number(document.getElementById("pCorrectStart").value)
+  let pCorrectEnd = Number(document.getElementById("pCorrectEnd").value)
+  let pCorrectInterval = Number(document.getElementById("pCorrectInterval").value)
+  let pMistakeStart = Number(document.getElementById("pMistakeStart").value)
+  let pMistakeEnd = Number(document.getElementById("pMistakeEnd").value)
+  let pMistakeInterval = Number(document.getElementById("pMistakeInterval").value)
+  let pFlukeStart = Number(document.getElementById("pFlukeStart").value)
+  let pFlukeEnd = Number(document.getElementById("pFlukeEnd").value)
+  let pFlukeInterval = Number(document.getElementById("pFlukeInterval").value)
+
+  Array.prototype.push.apply(students, generateStudents(startLevel, endLevel, pCorrectStart, pCorrectEnd, pCorrectInterval, pMistakeStart, pMistakeEnd, pMistakeInterval, pFlukeStart, pFlukeEnd, pFlukeInterval))
+  alert("Student data added")
+}
+
+/* Generates test data
+ * Used for user input
+ */
+function runTests() {
+  let testType = document.getElementById("testType").value
+  let controllerName = document.getElementById("controllerName").value
+  let nTests = document.getElementById("numberOfTests").value
+  Array.prototype.push.apply(tests, testStudents(nTests, students, controllerName, testType))
+  alert("Tests complete")
+}
+
+/* Generates charts
+ * Used for user input
+ */
+function drawTestGraphs() {
+  if (tests.length  === 0) {
+    return 
+  }
+  
+  let div = document.getElementById("drawGraphs")
+  let inputs = div.getElementsByTagName("input")
+  
+  for (let input of inputs) {
+    if (input.checked) {
+      switch (input.value) {
+        case "barTotalAsked":
+          barChartTotalAsked(tests, sLevel, eLevel, colours)
+          break
+        case "barAverageAsked":
+          barChartAverageLevelAsked(tests, sLevel, eLevel, colours)
+          break
+        case "scatterTotalAsked":
+          scatterGraphTotalAsked(tests, sLevel, eLevel, colours)
+          break
+        case "scatterAverageAsked":
+          scatterGraphAverageLevelAsked(tests, sLevel, eLevel, colours)
+          break
+        case "scatterDiff":
+          scatterGraphDiagnosysDifference(tests, sLevel, eLevel, colours)
+          break
+      }
+    }
+  }
+}

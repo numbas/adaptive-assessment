@@ -1,11 +1,17 @@
 let groupRowTag = "marea"
 let skillRowTag = "skill"
-// let regex = /\$?(marea|skill)\{([^}]+)\}/
-let regex = new RegExp("\\$?(" + groupRowTag + "|" + skillRowTag + ")\{([^}]+)\}")
-let space = /\s/g
+// let regex = new RegExp("\\$?(" + groupRowTag + "|" + skillRowTag + ")\{([^}]+)\}")
+let regex = new RegExp(`\\$?(${groupRowTag}|${skillRowTag})\{([^}]+)\}`)
 
+let space = /\s/g  // Used to remove spaces from tags in nodes and in groups
+
+/* The defnition of a network given an object in the form {name:, nodes:, groups:, nodesMap:}
+ * name: string, The name of the network
+ * nodes: Set(SkillNode), A set of SkillNode objects
+ * groups: Map(string -> Group), A map of group names to groups, to easily access groups for filtering the network
+ * nodesMap: Map(string -> SkillNode), A map of node tags to SkillNode objects
+ */
 class SkillNetwork {
-
   constructor(net) {
     this.name = net.name
     this.nodes = net.nodes
@@ -13,9 +19,11 @@ class SkillNetwork {
     this.nodesMap = net.nodesMap
     this.subGroups = findSubGroups(net)
   }
-
-
-  // returns a set of verticies and edges which make the graph
+  
+  /* Returns an object of the form {verticies:, edges:}
+   * verticies: Set(string), The set of tags of all nodes in the network
+   * edges: Set({from:, to:}), A set of objects of the form {to:, from:} describing all forwards links in the network
+   */
   getGraph() {
     let nodes = this.nodes
     let edges = new Set()
@@ -36,8 +44,12 @@ class SkillNetwork {
   }
 }
 
-function initNetwork(defenitions) {
-  let net = createNetwork(defenitions)
+/* Initialises and returns a network given a string defining the networks nodes and groups
+ * An error is thrown if the network defenition contains any cycles
+ * definitions: string, A string of all skills defined in Diagnosys' KBASE file
+ */
+function initNetwork(definitions) {
+  let net = createNetwork(definitions)
   net.name = "Complete Network"
   let cycles = findCycles(net)
   if (cycles.size !== 0) {
@@ -47,8 +59,11 @@ function initNetwork(defenitions) {
   return net
 }
 
-function createNetwork(defenitions) {
-  let input = defenitions.split("\n")
+/* Parses the network definition from Diagnosys and returns a SkillNetwork object it defines
+ * definitions: string, A string of all skills defined in Diagnosys' KBASE file
+ */
+function createNetwork(definitions) {
+  let input = definitions.split("\n")
   let nodes = new Set()
   let groups = new Map()
   let nodesMap = new Map()
@@ -115,13 +130,20 @@ function createNetwork(defenitions) {
   })
 }
 
-// not the same as union because it mutates the first parameter
+/* Collects elements in s2 and s1 into the set s1
+ * This is not the same as a union operation because it mutates s1
+ * s1: Set
+ * s2: Set
+ */
 function collect(s1, s2) {
   for (let elem of s2) {
       s1.add(elem);
   }
 }
 
+/* Returns a set of subgroups a given network contains, where a subgroup is defined by a set of connected nodes
+ * network: SKillNetwork
+ */
 function findSubGroups(network) {
   let nodes = network.nodes
   let nodesMap = network.nodesMap
@@ -160,15 +182,21 @@ function findSubGroups(network) {
     }
   }
   
-  console.log("Missing nodes: ", JSON.stringify([...missingNodes]))
+  if (missingNodes.size > 0) {
+    console.log("Missing nodes: ", JSON.stringify([...missingNodes]))
+  }
+  
   return subGroups
 }
 
+/* Returns a new group which contains all tags defined in all groups in the given array of groups
+ * groups: Array(Group)
+ */
 function collectGroups(groups) {
   let name = ""
   let tags = new Set()
   for (let group of groups) {
-    name += "[" + group.name + "]+"
+    name += `[${group.name}]+`
     collect(tags, group.tags)
   }
 
@@ -177,6 +205,10 @@ function collectGroups(groups) {
   return new Group(name, tags)
 }
 
+/* Returns a new group containing tags of nodes which are at the levels in the levels array given, in the network given
+ * levels: Array(number)
+ * network: SkillNetwork
+ */
 function groupByLevel(levels, network) {
   let tags = new Set()
   let nodes = network.nodes
@@ -187,10 +219,13 @@ function groupByLevel(levels, network) {
     }
   }
   
-  return new Group("levels " + levels, tags)
+  return new Group(`levels ${levels}`, tags)
 }
 
-// returns a new SkillNetwork containing only nodes in the groups given
+/* Returns a new SkillNetwork containing only nodes from the groups in the given groups array
+ * groups: Array(Group)
+ * network: SkillNetwork
+ */
 function filterNodes(groups, network) {
   let nodesMap = network.nodesMap
   let name = ""
@@ -199,7 +234,7 @@ function filterNodes(groups, network) {
   let missingNodes = new Map()
   
   for (let group of groups) {
-    name += "[" + group.name + "]+"
+    name += `[${group.name}]+`
     newGroups.set(group.name, group)
 
     for (let tag of group.tags) {
@@ -217,7 +252,10 @@ function filterNodes(groups, network) {
     }
   }
   
-  console.log("Group contains non-existent nodes", JSON.stringify([...missingNodes]))
+  if (missingNodes.size > 0) {
+    console.log("Group contains non-existent nodes", JSON.stringify([...missingNodes]))
+  }
+  
   name = name.substring(0, name.length - 1)
 
   return new SkillNetwork({
@@ -228,7 +266,9 @@ function filterNodes(groups, network) {
   })
 }
 
-// if a cycle contains smaller cycles, they will not be found
+/* Returns a set of cycles contained in the given network
+ * net: SkillNetwork
+ */
 function findCycles(net) {
   let SCCs = findAllSCC(net)
   let cycles = new Set()
@@ -249,7 +289,10 @@ function findCycles(net) {
   return cycles
 }
 
-// implementation of tarjans strongly connected components algorithm
+/* Returns a set containing all sets of strongly connected components in the network given
+ * This is an implementation of tarjans strongly connected components algorithm
+ * net: SkillNetwork
+ */
 function findAllSCC(net) {
   let graph = net.getGraph()
   let verticies = graph.verticies
@@ -302,6 +345,9 @@ function findAllSCC(net) {
   return allStrong
 }
 
+/* Returns a sorted array of a all items in the given set
+ * set: Set
+ */
 function setToArray(set) {
   let array = []
   

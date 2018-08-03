@@ -1,22 +1,26 @@
-/* Defines an exam controller which behaves similarly to the Diagnosys system, when a test is run
+/* Defines an exam controller based on the Diagnosys system, which is modified to allow the level of the student to change during the test
  * network: SkillNetwork
  * groupsOnTest: Array(Group)
  * startLevel: number
- * levelWeights: Map(number -> number), A map of level to weight, missing levels will be automatically added with a weight of 1
+ * numToClimb: number, The number of consecutively correct answers needed to move up a level
+ * numToDrop: number, The number of consecutively incorrect answers needed to move down a level
+ * levelWeights: Map(number -> number), A map of level to weight and missing levels will be automatically added with a weight of 1
  */
-class DiagnosysController extends ExamController {
-  constructor(network, groupsOnTest, startLevel, levelWeights) {
+class DiagnosysControllerV1 extends ExamController {
+  constructor(network, groupsOnTest, startLevel, numToClimb, numToDrop, levelWeights) {
     super()
     this.network = filterNodes(groupsOnTest, network)  // This network contains only the skills to be tested
     this.startLevel = startLevel
     this.nodesMap = this.network.nodesMap
     this.nodes = [...this.network.nodes].sort()
+    this.numToClimb = numToClimb
+    this.numToDrop = numToDrop
     
     let weights = new Map()
     if (levelWeights instanceof Map) {
       weights = levelWeights
     }
-
+    
     let state = new Map()
     for (let node of this.nodes) {
       if (!weights.has(node.level)) {
@@ -30,7 +34,10 @@ class DiagnosysController extends ExamController {
     }
     
     this.weights = weights
+    this.consecutiveCorrect = 0
+    this.consecutiveIncorrect = 0
     this.askedQs = []
+    this.currentLevel = startLevel
     this.state = state
     this.scores = new Map()
   }
@@ -41,6 +48,7 @@ class DiagnosysController extends ExamController {
     let nodes = this.nodes
     let nodesMap = this.nodesMap
     let state = this.state
+    
     for (let node of nodes) {
       let isQFound = true
       // dont choose something with possible forwards links
@@ -61,7 +69,7 @@ class DiagnosysController extends ExamController {
     for (let node of nodes) {
       if (state.get(node.tag) === "unasked") {
         let isQFound = true
-        for   (let blink of [...node.backwardsLink]) {
+        for (let blink of [...node.backwardsLink]) {
           if (state.get(blink) === "unasked") {
             isQFound = false
             break
@@ -73,6 +81,46 @@ class DiagnosysController extends ExamController {
         }
       }
     }
+  }
+  
+  /* Updates the current level based on the the number of consecutive questions answered in/correctly
+   */
+  updateLevel() {
+    let state = this.state
+    let climbLevel = (this.consecutiveCorrect >= this.numToClimb)
+    let dropLevel = (this.consecutiveIncorrect >= this.numToDrop)
+    let isMaxLevel = this.currentLevel > 4
+    let isMinLevel = this.currentLevel < 1
+
+    if (climbLevel) {
+      this.correctConsecutive = 0
+      this.consecutiveIncorrect = 0
+      if (!isMaxLevel) {
+        this.currentLevel += 1
+
+        // only higher levels become possible, unless already asked
+        for (let skill of [...state.keys()]) {
+          let level = this.nodesMap.get(skill).level
+          if (level <= this.currentLevel && state.get(skill) === "unasked") {
+            state.set(skill, "possible")
+          }
+        }
+      }
+    } else if (dropLevel) {
+      this.correctConsecutive = 0
+      this.consecutiveIncorrect = 0
+      if (!isMinLevel) {
+        this.currentLevel -= 1
+
+        // higher levels become unasked unless they were previously asked
+        for (let skill of [...state.keys()]) {
+          let level = this.nodesMap.get(skill).level
+          if (level > this.currentLevel && state.get(skill) === "possible") {
+            state.set(skill, "unasked")
+          }
+        }
+      }
+    }    
   }
   
   /* Sets the score of the given skills tag
@@ -128,7 +176,9 @@ class DiagnosysController extends ExamController {
     if (answerIsCorrect) {
       score = weights.get(nodesMap.get(tag).level)
       state.set(tag, "yes")
-
+      this.consecutiveCorrect++
+      this.consecutiveIncorrect = 0
+      
       for (let flink of node.forwardsLink) {
         if (state.get(flink) === "unasked") {
           state.set(flink, "possible")
@@ -140,6 +190,8 @@ class DiagnosysController extends ExamController {
       }
     } else {
       state.set(tag, "no")
+      this.consecutiveIncorrect++
+      this.consecutiveCorrect = 0
       
       for (let flink of node.forwardsLink) {    // only direct flinks are added to pNo
         if (state.get(flink) === "unasked") {
@@ -148,6 +200,7 @@ class DiagnosysController extends ExamController {
       }
     }
     
+    this.updateLevel()
     this.scores.set(tag, score)
   }
   
@@ -171,6 +224,7 @@ class DiagnosysController extends ExamController {
    * total: number, The total score
    * askedQs: Array(string), An array of the tags of the skills tested
    * startLevel: number
+   * endLevel: number, The current level of the student at the end of the exam
    */
   transcript() {
     let scores = this.scores
@@ -201,7 +255,8 @@ class DiagnosysController extends ExamController {
       state: state, 
       total: abilityEstimate,
       askedQs: this.askedQs,
-      startLevel: this.startLevel
+      startLevel: this.startLevel,
+      endLevel: this.currentLevel
     }
   }
 }

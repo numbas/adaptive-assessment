@@ -1,3 +1,15 @@
+/* Defines an exam controller which behaves similarly to the MapleTA system, when a test is run
+ * branches: Array(Array(SkillNode)), Each branch is an array of SkillNodes grouped by level
+ * branchWeights: Array(number), An array of weights for the corresponding branch index
+ * startBranch: number, The index of branch to start with
+ * numToClimb: number, The number of correct answers to climb a branch
+ * numToDrop: number, The number of incorrect answers to drop from a branch
+ * numOfQs: number, The maximum number of questions to be asked for the test to end
+ * numOfCorrectToEnd: number, The number of correct answers needed to end the test immediatley
+ * numOfInorrectToEnd: number, The number of incorrect answers needed to end the test immediatley
+ * climbOnTotal: boolean, Set to false if branches should be climbed when numToClimb number of consecutive questions has been answered correctly, true for total correct answers for the current level
+ * dropOnTotal: boolean, Set to false if branches should be dropped from when numToDrop number of consecutive questions has been answered incorrectly, true for total incorrect answers for the current level
+ */
 class MapleController extends ExamController {
   constructor(branches, branchWeights, startBranch, numToClimb, numToDrop, numOfQs, numOfCorrectToEnd, numOfInorrectToEnd, climbOnTotal, dropOnTotal) {
     super()
@@ -11,26 +23,21 @@ class MapleController extends ExamController {
     this.numOfInorrectToEnd = numOfInorrectToEnd  // number of incorrect answers to end test
     this.climbOnTotal = climbOnTotal    // boolean to choose whether climb happens with total or consecutive correct
     this.dropOnTotal = dropOnTotal      // boolean to choose whether drop happens with total or consecutive incorrect
-    
     this.totalNumOfQs = 0
     let temp = []
     for (let branch of branches) {
       this.totalNumOfQs += branch.length
       temp.push(branch)
     }
-    console.log(branches)
-    console.log(temp)
 
     let correctPerLevel = []
     let incorrectPerLevel = []
     let currentQPerBranch = []
-    // let skipBranches = []
     
     for (let i = 0; i < branches.length; i++) {
       currentQPerBranch.push(0)
       correctPerLevel.push(0)
       incorrectPerLevel.push(0)
-      // skipBranches.push(false)
     }
     
     this.state = {
@@ -39,7 +46,6 @@ class MapleController extends ExamController {
       questionNum: 0,
       currentBranch: startBranch,  // this will be the index in the array
       currentQPerBranch: currentQPerBranch,
-      // skipBranches: skipBranches,    // true if all questions have already been answered in branch
       correctTotal: 0,
       correctPerLevel: correctPerLevel,
       correctConsecutive: 0,
@@ -50,7 +56,9 @@ class MapleController extends ExamController {
     }
   }
   
-  nextQuestion() {
+  /* Returns the SkillNode object of the next skill which will be tested
+   */
+  nextSkillToTest() {
     if (this.isEnd()) {
       return null
     } else {
@@ -62,8 +70,8 @@ class MapleController extends ExamController {
     }
   }
     
-  
-  // will not work with non consecutive branch levels
+  /* Updates the state of the current branch being used after a question has been asked
+   */
   updateBranch() {
     let state = this.state
     let climbBranch = false
@@ -80,20 +88,25 @@ class MapleController extends ExamController {
       // this may be incorrect behaviour
       dropBranch = (0 < state.currentBranch) && (state.incorrectPerLevel[state.currentBranch] >= this.numToDrop)
     } else {
-      state.
       dropBranch = (0 < state.currentBranch) && (state.incorrectConsecutive >= this.numToDrop)
     }
 
     if (climbBranch) {
       state.correctConsecutive = 0
+      state.incorrectConsecutive = 0
       state.currentBranch += 1
     } else if (dropBranch) {
+      state.correctConsecutive = 0
       state.incorrectConsecutive = 0
       state.currentBranch -= 1
     }    
   }
   
-  getScore(question, answerIsCorrect) {
+  /* Sets the score of the given SkillNode
+   * question: SkillNode, The SkillNode obbject of the skill which is being answered
+   * answerIsCorrect: boolean
+   */
+  setScore(question, answerIsCorrect) {
     let state = this.state
     let score =  0
     
@@ -132,26 +145,27 @@ class MapleController extends ExamController {
     }
         
     this.updateBranch()
-    
-    return score
-  }
-   
-  storeResult(question, score) {
-    let scores = this.state.scores
-    scores.set(question, score)    // may be better to define score in storeResult
+    state.scores.set(question, score)    
   }
   
+  /* Returns an object of the form {string:, data:, total:},
+   * string: string, The transcript info as a readable string
+   * data: Map(SkillNode -> number), The final scores map of the examcontrollers state
+   * total: number, The sum of scores for all SkillNodes in the scores Map
+   */
   transcript() {
     let transcript = "Score|Tag|Description\n"
     let total = 0
     for (let entry of [...this.state.scores.entries()]) {
       total += entry[1]
-      transcript += entry[1] + "|"+ entry[0].tag + "|" + entry[0].description + "\n"
+      transcript += `${entry[1]}|${entry[0].tag}|${entry[0].description}\n`
     }
     transcript += total
     return {string: transcript, data: this.scores, total: total}
   }
   
+  /* Returns true if there are no questions left to ask, or the total number of questions specified has been asked, or if the number of in/correct answers to end the test has been met
+   */
   isEnd() {
     let state = this.state
     if ((state.branches.length === 0) || (state.questionNum >= this.totalNumOfQs) || (state.questionNum > this.numOfQs) || (state.correctTotal >= this.numOfCorrectToEnd) || (state.incorrectTotal >=this.numOfIncorrectToEnd)) {
@@ -162,6 +176,9 @@ class MapleController extends ExamController {
   }
 }
 
+/* Prepares data from the given network for use by the maple controller by grouping nodes by level
+ * network: SkillNetwork
+ */
 function prepareMapleData(network) { 
   let nodes = network.nodes
   let groupedNodes = new Map()
@@ -174,6 +191,7 @@ function prepareMapleData(network) {
     }
   }
   
+  // Sort the nodes in each level by the tag
   let array = [...groupedNodes.entries()].sort((x, y) => {
     let a = x[0]
     let b = y[0]

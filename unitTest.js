@@ -1,6 +1,3 @@
-/*
-TODO complete tests on groups in the complete diagnosys skills network
-*/
 let expectedCycleCheck = [
   {SCC: new Set([new Set(["1"])]), cycles: new Set()},
   {SCC: new Set([new Set(["1"])]), cycles: new Set([new Set(["1"])])},
@@ -31,31 +28,34 @@ let cycleNetworkDefs = document.querySelectorAll('script[type="text/cycle"]')
 let simpleDianosysTranscriptDefs = document.querySelectorAll('script[type="text/simpleDiagnosysTranscript"]')
 let simpleNetworkDefs = document.querySelectorAll('script[type="text/simpleNetwork"]')
 let completeNetDef = document.querySelectorAll('script[type="text/completeNetwork"]')[0]
-// let diagnosysTestCaseDefs = document.querySelectorAll('script[type="text/diagnosysTestCases"]')
 let dianosysTranscriptDefs = document.querySelectorAll('script[type="text/diagnosysTranscript"]')
 
 let completeNet = initNetwork(completeNetDef.textContent)
 let diagnosysTranscripts = parseDiagnosysFeedback(dianosysTranscriptDefs)
 let simpleDianosysTranscripts = parseDiagnosysFeedback(simpleDianosysTranscriptDefs)
-//loop to run tests
+
 runTests()
 
+/* A set of loops to run the tests
+*/
 function runTests() {
   for (let caseNo = 0; caseNo < cycleNetworkDefs.length; caseNo++) {
-    QUnit.test("Test cycle checking " + caseNo, testCreateNetwork(caseNo, cycleNetworkDefs))
-    QUnit.test("Test initNetwork fails " + caseNo, testInitNetwork(caseNo, cycleNetworkDefs))
+    QUnit.test(`Test cycle checking ${caseNo}`, testCreateNetwork(caseNo, cycleNetworkDefs))
+    QUnit.test(`Test initNetwork fails ${caseNo}`, testInitNetwork(caseNo, cycleNetworkDefs))
     caseNo++
   }
 
   for (let caseNo = 0; caseNo < simpleNetworkDefs.length; caseNo++) {
-    QUnit.test("Test DiagnosysController on simple networks " + caseNo, testDiagnosysControllerWithSimpleNets(caseNo, simpleDianosysTranscripts, simpleNetworkDefs))
+    QUnit.test(`Test DiagnosysController on simple networks ${caseNo}`, testDiagnosysControllerWithSimpleNets(caseNo, simpleDianosysTranscripts, simpleNetworkDefs))
   }
   
   for (let caseNo = 0; caseNo < dianosysTranscriptDefs.length; caseNo++) {
-    QUnit.test("Test DiagnosysController on complete network " + caseNo, testDiagnosysControllerWithFullNet(caseNo, diagnosysTranscripts))
+    QUnit.test(`Test DiagnosysController on complete network ${caseNo}`, testDiagnosysControllerWithFullNet(caseNo, diagnosysTranscripts))
   }
 }
 
+/* This tests that cycle checking and network creation works correctly
+ */
 function testCreateNetwork(caseNo,defs) {
   return function(assert) {
     let expectedSets = expectedCycleCheck[caseNo]
@@ -65,7 +65,7 @@ function testCreateNetwork(caseNo,defs) {
     
     drawGraph(net, size)
      
-    // console.log("test case: " + caseNo)    
+    // console.log(`test case: ${caseNo}`)    
     // console.log('network',net)
     // console.log('observed',observed)
     // console.log('expected',expectedCycleCheck[caseNo])
@@ -74,6 +74,8 @@ function testCreateNetwork(caseNo,defs) {
   }
 }
 
+/* This checks that the network initialisation works correctly by throwing an error when a cycle is detected
+ */
 function testInitNetwork(caseNo,defs) {
   return function(assert) {
     let expected = expectedNetworkFail[caseNo]
@@ -87,7 +89,7 @@ function testInitNetwork(caseNo,defs) {
       observed = true
     }
     
-    // console.log("test[initNetwork] case: " + caseNo)
+    // console.log(`test[initNetwork] case: ${caseNo}`)
     // console.log('observed',observed)
     // console.log('expected',expectedNetworkFail[caseNo])
     
@@ -95,7 +97,8 @@ function testInitNetwork(caseNo,defs) {
   }
 }
 
-// may be able to use this for the full network test as well, 
+/* This tests that the DiagnosysController works the same as Diagnosys by comparing transcripts on small test networks
+ */
 function testDiagnosysControllerWithSimpleNets(caseNo, transcripts, netDefs) {
   return function(assert) {
     let netDef = netDefs[caseNo].textContent
@@ -124,6 +127,8 @@ function testDiagnosysControllerWithSimpleNets(caseNo, transcripts, netDefs) {
   }
 }
 
+/* This tests that the DignosysController works correctly on the complete network by reading data from the Diagnosys transript to use to run a test and then comparing transcripts
+ */
 function testDiagnosysControllerWithFullNet(caseNo, transcripts) {
   return function(assert) {
     let transcriptData = transcripts[caseNo]
@@ -158,7 +163,17 @@ function testDiagnosysControllerWithFullNet(caseNo, transcripts) {
   }
 }
 
-// may need to also store start level and groups
+/* Parses the Diagnosys transcript to return dasta to be used to verify the correctness of the DiagnosysController as well as data used to run the test
+ * Returned data is of the form {
+ *  answers: Array(boolean), This is the order of the answers given, e.g [true, true false]
+ *  askedQs: Array(string)
+ *  skillState: Map(string -> string)
+ *  startLevel: number
+ *  numAsked: number, This is the number of questiond asked 
+ *  numCorrect: number
+ *  groupNames: Array(string)
+ * }
+ */
 function parseDiagnosysFeedback(defs) {
   let transcripts = []
   

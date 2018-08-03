@@ -11,11 +11,16 @@
     <script type="text/javascript" src="SimpleController.js"></script>
     <script type="text/javascript" src="MapleController.js"></script>
     <script type="text/javascript" src="DiagnosysController.js"></script>
+    <script type="text/javascript" src="DiagnosysControllerV1.js"></script>
     <script defer type="text/javascript" src="Main.js"></script>
   </head>
+<!--         
+      $marea{tutquest,tut1,tut2,tut3}
+      $skill{tut1,Tutorial question 1,0}
+      $skill{tut2,Tutorial question 2,0}
+      $skill{tut3,Tutorial question 3,0} -->
   <body id="page">
     <script type="text/network">
-      $marea{tutquest,tut1,tut2,tut3}
       $marea{numbers,101,102,103,104,105,107,108,109,112,201,202,205,206,215,216,301,302}
       $marea{powers,106,203,204,303,304,305,306,401,402,403}
       $marea{basic algebra,110,111,113,207,208,209,210,211,212,213,214}
@@ -26,9 +31,6 @@
       $marea{miscellaneous,221,222,223,321,322,323,324,421,422}
       $marea{graphs,151,251,351,451,452}
       $marea{area+volume,161,261,262,263,361,362,363,461,462}
-      $skill{tut1,Tutorial question 1,0}
-      $skill{tut2,Tutorial question 2,0}
-      $skill{tut3,Tutorial question 3,0}
       $skill{101,Multiplication of negative numbers,1}
       $skill{102,Multiply negative and positive,1,101}
       $skill{103,Negative Numbers,1,102,201}
@@ -123,8 +125,9 @@
       $skill{462,Volume Area Length relationships,4}
     </script>
     <button type="button" onclick="initTest()">Initialise Test</button>
-    <button type="button" onclick="answerCorrect()">Correct Answer</button>
-    <button type="button" onclick="answerIncorrect()">Incorrect Answer</button>
+    <button type="button" onclick="giveAnswer(true)">Correct Answer</button>
+    <button type="button" onclick="giveAnswer(false)">Incorrect Answer</button>
+<!--     <button type="button" onclick="getCurrentQ(diagController)">Log Current Skill</button> -->
  
   </body>
 </html>

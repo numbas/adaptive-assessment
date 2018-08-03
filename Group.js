@@ -1,3 +1,9 @@
+ 
+/* The defenition of a group which skills may non exclusively belong to, 
+ * defined by a group name and the tags of the skills it contains
+ * name: string, The name of the group
+ * tags: Set(string), The set of tags in the group
+ */
 class Group {
   constructor(name, tags) {
     this.tags = new Set()
@@ -8,6 +14,6 @@ class Group {
   }
 
   toString() {
-    return this.name + ", nodes: " +  [...this.tags]
+    return `name: ${this.name}, nodes: ${[...this.tags]}`
   }
 }
