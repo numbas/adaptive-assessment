@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <style>
+      div {
+        margin: 10px;
+      }
+    </style>
     <meta charset="utf-8"/>
     <script src="go-debug.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    
     <script type="text/javascript" src="SkillNode.js"></script>
     <script type="text/javascript" src="Group.js"></script>
     <script type="text/javascript" src="SkillNetwork.js"></script>
@@ -12,14 +19,51 @@
     <script type="text/javascript" src="MapleController.js"></script>
     <script type="text/javascript" src="DiagnosysController.js"></script>
     <script type="text/javascript" src="DiagnosysControllerV1.js"></script>
-    <script defer type="text/javascript" src="Main.js"></script>
+    <script type="text/javascript" src="DrawTestGraphs.js"></script>
+    <script type="text/javascript" src="Student.js"></script>
+    <script defer type="text/javascript" src="TestSimulator.js"></script>
   </head>
-<!--         
-      $marea{tutquest,tut1,tut2,tut3}
-      $skill{tut1,Tutorial question 1,0}
-      $skill{tut2,Tutorial question 2,0}
-      $skill{tut3,Tutorial question 3,0} -->
   <body id="page">
+    <div>
+      <button type="button" onclick="resetTestData()">Reset test data</button>
+      <button type="button" onclick="resetStudentData()">Reset student data</button>
+      <button type="button" onclick="removeAllCharts()">Reset graphs</button>
+      <button type="button" onclick="console.clear()">Reset console</button>
+    </div>
+    <div id="studentData">
+      <p>
+        I'd like students from level <input id="startLevel" type="number" min="0" max="4" value="1"/> to level <input id="endLevel" type="number" min="0" max="4" value="4"/>, with: 
+        <br/>
+        - pCorrect from <input id="pCorrectStart" type="number" step="0.01" min="0" max="1" value="0"/> to <input id="pCorrectEnd" type="number" step="0.01" min="0" max="1" value="1"/> in steps of <input id="pCorrectInterval" type="number" step="0.01" min="0" max="1" value="0.01"/>
+        <br/>
+        - pMistake from <input id="pMistakeStart" type="number" step="0.01" min="0" max="1" value="0"/> to <input id="pMistakeEnd" type="number" step="0.01" min="0" max="1" value="0"/> in steps of <input id="pMistakeInterval" type="number" step="0.01" min="0" max="1" value="0.1"/>
+        <br/>
+        - pFluke from <input id="pFlukeStart" type="number" step="0.01" min="0" max="1" value="0"/> to <input id="pFlukeEnd" type="number" step="0.01" min="0" max="1" value="0"/> in steps of <input id="pFlukeInterval" type="number" step="0.01" min="0" max="1" value="0.1"/>
+        <br/>
+        <button type="button" onclick="addStudentData()">Please</button>
+        <br/>
+        I'd like to test the student <input id="numberOfTests" type="number" name="nTests" min="1" value="5"/> times each, using the 
+        <select id="controllerName">
+          <option value="diagnosys">Diagnosys</option>
+          <option value="diagnosysV1">DiagnosysV1</option>
+        </select> 
+        controller with a test type of 
+        <select id="testType">
+          <option value="constantP">Constant pCorrect value</option>
+          <option value="determinedAns">Determined answers using pCorrect and inferences</option>
+        </select>
+        <br/>
+        <button type="button" onclick="runTests()">Please</button>
+      </p>
+    </div>
+    <div id="drawGraphs">
+      <input type="checkbox" name="barTotalAsked" value="barTotalAsked">Barchart of total number of questions asked in a test<br/>
+      <input type="checkbox" name="barAverageAsked" value="barAverageAsked">Barchart of level of questions asked in a test<br/>
+      <input type="checkbox" name="scatterTotalAsked" value="scatterTotalAsked">Scatter graph of total number of questions asked in a test<br/>
+      <input type="checkbox" name="scatterAverageAsked" value="scatterAverageAsked">Scatter graph of level of questions asked in a test<br/>
+      <input type="checkbox" name="scatterDiff" value="scatterDiff">Scatter graph of total number of skills diagnosed differently in a test (only works on determined Answer tests)<br/>
+      <button type="button" onclick="drawTestGraphs()">Draw the chosen graphs</button>
+    </div>
     <script type="text/network">
       $marea{numbers,101,102,103,104,105,107,108,109,112,201,202,205,206,215,216,301,302}
       $marea{powers,106,203,204,303,304,305,306,401,402,403}
@@ -124,10 +168,5 @@
       $skill{461,Surface area of a cylinder,4}
       $skill{462,Volume Area Length relationships,4}
     </script>
-    <button type="button" onclick="initTest()">Initialise Test</button>
-    <button type="button" onclick="giveAnswer(true)">Correct Answer</button>
-    <button type="button" onclick="giveAnswer(false)">Incorrect Answer</button>
-<!--     <button type="button" onclick="getCurrentQ(diagController)">Log Current Skill</button> -->
- 
   </body>
 </html>

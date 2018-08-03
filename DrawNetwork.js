@@ -1,9 +1,12 @@
 let networkNo = 0
 
+/* Draws the given network to the page
+ * network: SkillNetwork
+ * size: {height: number, width: number}
+ */
 function drawGraph(network, size) {
   let divId = "network" + networkNo
   let nodes = network.nodes
-  let groups = network.groups
   let edges = network.getGraph().edges
 
   addNewDiv("page", divId, size)
@@ -32,20 +35,19 @@ function drawGraph(network, size) {
   makeGObject(go.TextBlock, new go.Binding("text", "tag")),
   makeGObject(go.TextBlock, new go.Binding("text", "description"))
   )
-
-  // graph.linkTemplate =
-  // makeGObject(
-  //   go.Link, {},
-  //   makeGObject(go.Shape, {strokeWidth: 3, stroke: "#555"})
-  // )
-
+  
   networkNo++
 }
 
+/* Inserts a new div element with the given size and id, into the page of the given pageid
+ * pageid: string
+ * id: string/int, used to identify different network diagrams
+ * size: {height:, width:}
+ */
 function addNewDiv(pageid, id, size) {
   let width = size.width
   let height = size.height
   let page = document.getElementById(pageid)
-  let div = "<div id=\""+ id + "\"style=\"width:" + width + "px; height:" + height + "px; background-color: #DAE4E4; margin: 10px;\"></div>"
+  let div = `<div id="${id}" style="width:${width}px; height:${height}px; background-color: #DAE4E4; margin: 10px;"></div>`
   page.insertAdjacentHTML('beforeend', div)
 }

@@ -2,43 +2,3098 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
+  <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.6.1.css">
   <script src="go-debug.js"></script>
   <script type="text/javascript" src="SkillNode.js"></script>
   <script type="text/javascript" src="Group.js"></script>
   <script type="text/javascript" src="SkillNetwork.js"></script>
   <script type="text/javascript" src="DrawNetwork.js"></script>
+  <script type="text/javascript" src="ExamController.js"></script>
+  <script type="text/javascript" src="DiagnosysController.js"></script>
   <script defer type="text/javascript" src="unitTest.js"></script>
 </head>
 <body id="page">
-  <script type="text/network">
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="https://code.jquery.com/qunit/qunit-2.6.1.js"></script>
+  <script type="text/cycle">
     skill{1,node 1,0}
   </script>
-  <script type="text/network">
+  <script type="text/cycle">
     skill{1,node 1,0,1}
   </script>
-  <script type="text/network">
+  <script type="text/cycle">
     skill{1,node 1,0,2}
     skill{2,node 2,0}
   </script>
-  <script type="text/network">
+  <script type="text/cycle">
     skill{1,node 1,0,2}
     skill{2,node 2,0,1}
   </script>
-  <script type="text/network">
+  <script type="text/cycle">
     skill{1,node 1,0,2}
     skill{2,node 2,0,3}
     skill{3,node 3,0,1}
   </script>
-  <script type="text/network">
+  <script type="text/cycle">
     skill{1,node 1,0,2}
     skill{2,node 2,0,1,3}
     skill{3,node 3,0,1,2,4}
     skill{4,node 4,0,1,2,3}
   </script>
-  <script type="text/network">
+  <script type="text/cycle">
     skill{1,node 1,0,2,3,4}
     skill{2,node 2,0,1,3,4}
     skill{3,node 3,0,1,2,4}
     skill{4,node 4,0,1,2,3}
   </script>
+  <script type="text/cycle">
+    skill{1,node 1,0,2}
+    skill{2,node 2,0}
+    skill{3,node 3,0,4}
+    skill{4,node 4,0}
+  </script>
+  <script type="text/cycle">
+    skill{1,node 1,0,2}
+    skill{2,node 2,0,1}
+    skill{3,node 3,0,4}
+    skill{4,node 4,0,3}
+  </script>
+  
+<!--   For each simple network run through an equivalent test with Diagnosys to create test data which can be added here as a simpleDiagnosysTranscript -->
+  <script type="text/simpleNetwork">
+    skill{1,node 1,0,2}
+    skill{2,node 2,0,3}
+    skill{3,node 3,0,4}
+    skill{4,node 4,0,5}
+    skill{5,node 4,0}
+  </script>
+  <script type="text/simpleNetwork">
+    skill{1,node 1,0,2,3}
+    skill{2,node 2,0,4,5}
+    skill{3,node 3,0,6,7}
+    skill{4,node 4,0}
+    skill{5,node 4,0}
+    skill{6,node 4,0}
+    skill{7,node 4,0}
+  </script>
+  <script type="text/simpleNetwork">
+    skill{1,node 1,2,3}
+    skill{2,node 2,2,3}
+    skill{3,node 3,3,5}
+    skill{4,node 4,2,5}
+    skill{5,node 4,3}
+  </script>
+  <script type="text/simpleNetwork">
+    skill{1,node 1,2,6}
+    skill{2,node 2,2,6,8}
+    skill{3,node 3,2,7}
+    skill{4,node 4,2,5}
+    skill{5,node 5,3}
+    skill{6,node 6,3,7}
+    skill{7,node 7,3,5}
+    skill{8,node 8,3}
+  </script>
+  
+  
+  <script type="text/simpleDiagnosysTranscript">
+    intro;surname;Simpleexpected
+    intro;startlevel;0
+    intro;date;16 7 2018
+    intro;total mark;100
+    intro;qq asked;1
+    intro;qq correct;1
+    marea;EXPECTED;100
+    admin;name;simpleExpected
+    admin;group;EXPECTED
+    admin;qual;level0
+    intro;timeused;1
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;1;pyes
+    skill;2;pyes
+    skill;3;pyes
+    skill;4;pyes
+    skill;5;yes
+    manswer;5;0;correct
+  </script>
+  <script type="text/simpleDiagnosysTranscript">
+    intro;surname;Simpleexpected
+    intro;startlevel;0
+    intro;date;16 7 2018
+    intro;total mark;100
+    intro;qq asked;4
+    intro;qq correct;4
+    marea;EXPECTED;100
+    admin;name;simpleExpected
+    admin;group;EXPECTED
+    admin;qual;level0
+    intro;timeused;1
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;1;pyes
+    skill;2;pyes
+    skill;3;pyes
+    skill;4;yes
+    skill;5;yes
+    skill;6;yes
+    skill;7;yes
+    manswer;4;0;correct
+    manswer;5;0;correct
+    manswer;6;0;correct
+    manswer;7;0;correct
+  </script>
+  <script type="text/simpleDiagnosysTranscript">
+    intro;surname;Simpleexpected
+    intro;startlevel;2
+    intro;date;16 7 2018
+    intro;total mark;100
+    intro;qq asked;3
+    intro;qq correct;3
+    marea;EXPECTED;100
+    admin;name;simpleExpected
+    admin;group;EXPECTED
+    admin;qual;level2
+    intro;timeused;0
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;1;yes
+    skill;2;pyes
+    skill;3;yes
+    skill;4;pyes
+    skill;5;yes
+    manswer;1;0;correct
+    manswer;3;0;correct
+    manswer;5;0;correct
+  </script>
+  <script type="text/simpleDiagnosysTranscript">
+    intro;surname;Simpleexpected
+    intro;startlevel;2
+    intro;date;16 7 2018
+    intro;total mark;100
+    intro;qq asked;5
+    intro;qq correct;5
+    marea;EXPECTED;100
+    admin;name;simpleExpected
+    admin;group;EXPECTED
+    admin;qual;level2
+    intro;timeused;0
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;1;yes
+    skill;2;pyes
+    skill;3;yes
+    skill;4;yes
+    skill;5;yes
+    skill;6;pyes
+    skill;7;pyes
+    skill;8;yes
+    manswer;1;0;correct
+    manswer;3;0;correct
+    manswer;4;0;correct
+    manswer;5;0;correct
+    manswer;8;0;correct
+  </script>
+  
+<!--       $marea{tutquest,tut1,tut2,tut3}
+      $skill{tut1,Tutorial question 1,0}
+    $skill{tut2,Tutorial question 2,0}
+    $skill{tut3,Tutorial question 3,0}
+      $marea{testtopic,203,204,210,303,211,316,311,313}
+ -->
+
+  <script type="text/completeNetwork">
+    $marea{numbers,101,102,103,104,105,107,108,109,112,201,202,205,206,215,216,301,302}
+    $marea{powers,106,203,204,303,304,305,306,401,402,403}
+    $marea{basic algebra,110,111,113,207,208,209,210,211,212,213,214}
+    $marea{algebra methods,307,308,311,312,313,404,407,410}
+    $marea{equations,309,310,314,315,316,406,411,412}
+    $marea{algebra+calculus,317,341,342,343,405,408,409,441,442}
+    $marea{statistics,231,232,233,234,334,335}
+    $marea{miscellaneous,221,222,223,321,322,323,324,421,422}
+    $marea{graphs,151,251,351,451,452}
+    $marea{area+volume,161,261,262,263,361,362,363,461,462}
+    $skill{101,Multiplication of negative numbers,1}
+    $skill{102,Multiply negative and positive,1,101}
+    $skill{103,Negative Numbers,1,102,201}
+    $skill{104,Size of decimals,1,201}
+    $skill{105,Decimal places,1,202}
+    $skill{106,Definition of positive powers,1,203,204}
+    $skill{107,Ratios,1,205,206}
+    $skill{108,Factors of an integer,1,107,206,208}
+    $skill{109,Simple fractions,1,216}
+    $skill{110,Collect terms (simple),1,211,312,317}
+    $skill{111,Solving a simple equation,1,212}
+    $skill{112,Simple calculation,1,210,214,215}
+    $skill{113,Evaluating a simple expression,1,214}
+    $skill{151,Coordinates,1,251}
+    $skill{161,Area of a triangle,1,261,262}
+    $skill{201,Use of < and > signs,2,301}
+    $skill{202,Significant figures,2,302}
+    $skill{203,Definition of negative powers,2,302,304,306}
+    $skill{204,Rules for positive powers,2,304}
+    $skill{205,Inverse ratios,2}
+    $skill{206,Cancelling numerical fractions,2,207,216,303}
+    $skill{207,Multiply algebraic fractions,2,307}
+    $skill{208,Factors of algebraic products,2,209}
+    $skill{209,Simple Factorisation,2,309,311,412}
+    $skill{210,Expanding one bracket,2,209,312}
+    $skill{211,Collecting terms,2}
+    $skill{212,Solving linear equations,2,309,310,314,315}
+    $skill{213,Transposition of formula,2,315}
+    $skill{214,Evaluating formula,2,316,410}
+    $skill{215,Precedence Rules,2}
+    $skill{216,Add/subtract numerical fractions,2,308}
+    $skill{221,Pythagoras,2,321,322}
+    $skill{222,Definition of sin and cos,2,322,422}
+    $skill{223,Percentages,2,324}
+    $skill{231,Range of a set of numbers,2}
+    $skill{232,Mean of a set of numbers,2}
+    $skill{233,Simple probability (coins),2,334}
+    $skill{234,Venn Diagrams (probability),2,335}
+    $skill{251,Gradient of a straight line,2,351}
+    $skill{261,Area of trapezium,2,363}
+    $skill{262,Area and circumference of a circle,2,361}
+    $skill{263,Similar triangles,2,362}
+    $skill{301,Solution of simple inequalities,3}
+    $skill{302,Scientific Notation,3,401}
+    $skill{303,Simplification of fractions with powers,3,401}
+    $skill{304,Rules for negative powers,3,303,305,402,403}
+    $skill{305,Rules for fractional powers,3}
+    $skill{306,Definition of fractional powers,3,305}
+    $skill{307,Division of algebraic fractions,3}
+    $skill{308,Add/subtract algebraic fractions,3,404,405}
+    $skill{309,Simple Quadratic equations,3}
+    $skill{310,Relation between roots and factors,3}
+    $skill{311,Factorising a quadratic,3,310,407}
+    $skill{312,Expanding two brackets,3,311,313,405,408,410}
+    $skill{313,Difference of squares,3}
+    $skill{314,Simultaneous Equations,3}
+    $skill{315,Unusual linear equation,3,412}
+    $skill{316,Use of quadratic formula,3,411}
+    $skill{317,Complex numbers,3,408}
+    $skill{321,Equation of a circle,3,421}
+    $skill{322,Sin and Cos formula,3}
+    $skill{323,Definition of radians,3}
+    $skill{324,Percentages (advanced),3}
+    $skill{334,Conditional probability,3}
+    $skill{335,Venn Diagrams (conditional prob.),3}
+    $skill{341,Differentiation of powers,3,342,441,442}
+    $skill{342,Finding Max/Min of a quadratic,3}
+    $skill{343,Geometric Progression,3}
+    $skill{351,Equation of a straight line,3,451,452}
+    $skill{361,Volume of cylinder,3,461}
+    $skill{362,Area/Length relationship,3,462}
+    $skill{363,Area of irregular shapes,3}
+    $skill{401,Simplify with scientific notation,4}
+    $skill{402,Logs,4}
+    $skill{403,Arbitrary factors,4}
+    $skill{404,L.c.d. of an algebraic fraction,4}
+    $skill{405,Identification of common errors,4}
+    $skill{406,Solve quad. by comp. the square,4}
+    $skill{407,Quadratics - completing the square,4,406}
+    $skill{408,Multiplication of complex numbers,4}
+    $skill{409,Divide by zero (possible solution),4}
+    $skill{410,Substituting into a formula,4}
+    $skill{411,Solutions of a quadratic,4,409}
+    $skill{412,Difficult linear equation,4}
+    $skill{421,Deduce radius of circle,4}
+    $skill{422,Sin and Cos as functions,4}
+    $skill{441,Product rule,4}
+    $skill{442,Integration of powers,4}
+    $skill{451,Recognise formula of quad. graph,4}
+    $skill{452,Recognise formula of recip. graph,4}
+    $skill{461,Surface area of a cylinder,4}
+    $skill{462,Volume Area Length relationships,4}
+  </script>
+<!--   Test 0 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Numpowalg
+    intro;startlevel;2
+    intro;date;16 7 2018
+    intro;total mark;100
+    intro;qq asked;21
+    intro;qq correct;21
+    marea;numbers;100
+    marea;powers;100
+    marea;basic algebra;100
+    admin;name;numpowalg
+    admin;firstname;n
+    admin;group;numbers powers basic algebra
+    admin;qual;level2
+    intro;timeused;1
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;pyes
+    skill;105;pyes
+    skill;106;pyes
+    skill;107;pyes
+    skill;108;pyes
+    skill;109;pyes
+    skill;110;pyes
+    skill;111;pyes
+    skill;112;pyes
+    skill;113;pyes
+    skill;201;yes
+    skill;202;yes
+    skill;203;pyes
+    skill;204;yes
+    skill;205;yes
+    skill;206;pyes
+    skill;207;yes
+    skill;208;pyes
+    skill;209;yes
+    skill;210;pyes
+    skill;211;yes
+    skill;212;yes
+    skill;213;yes
+    skill;214;yes
+    skill;215;yes
+    skill;216;yes
+    skill;301;yes
+    skill;302;yes
+    skill;303;pyes
+    skill;304;yes
+    skill;305;yes
+    skill;306;yes
+    skill;401;yes
+    skill;402;yes
+    skill;403;yes
+    manswer;101c;0;correct
+    manswer;201a;0;correct
+    manswer;202e;0;correct
+    manswer;204d;0;correct
+    manswer;205e;0;correct
+    manswer;207e;0;correct
+    manswer;209c;0;correct
+    manswer;211d;0;correct
+    manswer;212a;0;correct
+    manswer;213c;0;correct
+    manswer;214d;0;correct
+    manswer;215b;0;correct
+    manswer;216d;0;correct
+    manswer;301a;0;correct
+    manswer;302d;0;correct
+    manswer;304b;0;correct
+    manswer;305a;0;correct
+    manswer;401a;0;correct
+    manswer;402b;0;correct
+    manswer;403b;0;correct
+    manswer;306a;0;correct
+  </script>
+  <!--   Test 1 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Test
+    intro;startlevel;2
+    intro;date;17 7 2018
+    intro;total mark;39
+    intro;qq asked;23
+    intro;qq correct;8
+    marea;numbers;59
+    marea;powers;0
+    marea;basic algebra;45
+    admin;name;test
+    admin;firstname;n
+    admin;group;numbers powers basic algebra
+    admin;qual;level2
+    intro;timeused;0
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;yes
+    skill;103;pyes
+    skill;104;pyes
+    skill;105;no
+    skill;106;no
+    skill;107;pyes
+    skill;108;pyes
+    skill;109;yes
+    skill;110;pyes
+    skill;111;no
+    skill;112;pyes
+    skill;113;no
+    skill;201;yes
+    skill;202;no
+    skill;203;no
+    skill;204;no
+    skill;205;no
+    skill;206;pyes
+    skill;207;yes
+    skill;208;yes
+    skill;209;no
+    skill;210;yes
+    skill;211;yes
+    skill;212;no
+    skill;213;no
+    skill;214;no
+    skill;215;no
+    skill;216;no
+    skill;301;yes
+    skill;302;pno
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;pno
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    manswer;101c;;incorrect
+    manswer;102d;0;correct
+    manswer;201a;0;correct
+    manswer;202d;;incorrect
+    manswer;105a;;incorrect
+    manswer;203d;;incorrect
+    manswer;204c;;incorrect
+    manswer;106c;;incorrect
+    manswer;205c;;incorrect
+    manswer;207a;0;correct
+    manswer;209c;;incorrect
+    manswer;208a;0;correct
+    manswer;210b;0;correct
+    manswer;211b;0;correct
+    manswer;212a;;incorrect
+    manswer;111d;;incorrect
+    manswer;213b;;incorrect
+    manswer;214a;;incorrect
+    manswer;113e;;incorrect
+    manswer;215b;;incorrect
+    manswer;216c;;incorrect
+    manswer;109a;0;correct
+    manswer;301e;0;correct
+  </script>
+  <!--   Test 2 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Lev
+    intro;startlevel;1
+    intro;date;17 7 2018
+    intro;total mark;41
+    intro;qq asked;50
+    intro;qq correct;32
+    marea;numbers;71
+    marea;powers;0
+    marea;basic algebra;64
+    marea;algebra methods;50
+    marea;equations;0
+    marea;algebra+calculus;33
+    marea;statistics;67
+    marea;miscellaneous;56
+    marea;graphs;0
+    marea;area+volume;33
+    admin;name;lev1
+    admin;group;all
+    admin;qual;level1
+    intro;timeused;6
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;yes
+    skill;105;no
+    skill;106;no
+    skill;107;yes
+    skill;108;pyes
+    skill;109;yes
+    skill;110;yes
+    skill;111;no
+    skill;112;yes
+    skill;113;yes
+    skill;151;no
+    skill;161;yes
+    skill;201;yes
+    skill;202;pno
+    skill;203;pno
+    skill;204;pno
+    skill;205;no
+    skill;206;pyes
+    skill;207;yes
+    skill;208;yes
+    skill;209;no
+    skill;210;pyes
+    skill;211;yes
+    skill;212;pno
+    skill;213;yes
+    skill;214;no
+    skill;215;yes
+    skill;216;yes
+    skill;221;yes
+    skill;222;no
+    skill;223;yes
+    skill;231;no
+    skill;232;no
+    skill;233;yes
+    skill;234;yes
+    skill;251;pno
+    skill;261;yes
+    skill;262;no
+    skill;263;no
+    skill;301;no
+    skill;302;pno
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;pno
+    skill;307;yes
+    skill;308;yes
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;pyes
+    skill;313;yes
+    skill;314;pno
+    skill;315;pno
+    skill;316;pno
+    skill;317;yes
+    skill;321;yes
+    skill;322;yes
+    skill;323;no
+    skill;324;no
+    skill;334;yes
+    skill;335;yes
+    skill;341;no
+    skill;342;pno
+    skill;343;yes
+    skill;351;pno
+    skill;361;pno
+    skill;362;pno
+    skill;363;yes
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;no
+    skill;405;yes
+    skill;406;pno
+    skill;407;pno
+    skill;408;no
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;yes
+    skill;422;pno
+    skill;441;pno
+    skill;442;pno
+    skill;451;pno
+    skill;452;pno
+    skill;461;pno
+    skill;462;pno
+    manswer;101e;0;correct
+    manswer;104a;0;correct
+    manswer;105e;;incorrect
+    manswer;106b;;incorrect
+    manswer;107a;0;correct
+    manswer;109b;0;correct
+    manswer;110b;0;correct
+    manswer;111c;;incorrect
+    manswer;112e;0;correct
+    manswer;151a;;incorrect
+    manswer;161b;0;correct
+    manswer;201b;0;correct
+    manswer;205d;;incorrect
+    manswer;211e;0;correct
+    manswer;214d;;incorrect
+    manswer;113d;0;correct
+    manswer;215a;0;correct
+    manswer;216b;0;correct
+    manswer;261b;0;correct
+    manswer;262d;;incorrect
+    manswer;301c;;incorrect
+    manswer;308c;0;correct
+    manswer;317b;0;correct
+    manswer;363c;0;correct
+    manswer;404e;;incorrect
+    manswer;405b;0;correct
+    manswer;408e;;incorrect
+    manswer;207b;0;correct
+    manswer;307a;0;correct
+    manswer;208b;0;correct
+    manswer;209a;;incorrect
+    manswer;213a;0;correct
+    manswer;221b;0;correct
+    manswer;321b;0;correct
+    manswer;322;0;correct
+    manswer;421b;0;correct
+    manswer;222d;;incorrect
+    manswer;223b;0;correct
+    manswer;324d;;incorrect
+    manswer;231c;;incorrect
+    manswer;232a;;incorrect
+    manswer;233d;0;correct
+    manswer;334c;0;correct
+    manswer;234a;0;correct
+    manswer;335c;0;correct
+    manswer;263d;;incorrect
+    manswer;313d;0;correct
+    manswer;323c;;incorrect
+    manswer;341e;;incorrect
+    manswer;343b;0;correct
+  </script>
+  <!--   Test 3 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Lev
+    intro;startlevel;1
+    intro;date;17 7 2018
+    intro;total mark;46
+    intro;qq asked;55
+    intro;qq correct;40
+    marea;numbers;41
+    marea;powers;30
+    marea;basic algebra;45
+    marea;algebra methods;0
+    marea;equations;25
+    marea;algebra+calculus;56
+    marea;statistics;100
+    marea;miscellaneous;67
+    marea;graphs;20
+    marea;area+volume;78
+    admin;name;Lev1
+    admin;group;all
+    admin;qual;level1
+    intro;timeused;2
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;yes
+    skill;103;pyes
+    skill;104;no
+    skill;105;yes
+    skill;106;yes
+    skill;107;no
+    skill;108;no
+    skill;109;no
+    skill;110;yes
+    skill;111;yes
+    skill;112;yes
+    skill;113;yes
+    skill;151;yes
+    skill;161;yes
+    skill;201;pno
+    skill;202;yes
+    skill;203;pyes
+    skill;204;no
+    skill;205;pno
+    skill;206;pno
+    skill;207;pno
+    skill;208;pno
+    skill;209;pno
+    skill;210;no
+    skill;211;no
+    skill;212;yes
+    skill;213;yes
+    skill;214;no
+    skill;215;yes
+    skill;216;pno
+    skill;221;yes
+    skill;222;no
+    skill;223;yes
+    skill;231;yes
+    skill;232;yes
+    skill;233;yes
+    skill;234;yes
+    skill;251;no
+    skill;261;no
+    skill;262;yes
+    skill;263;yes
+    skill;301;pno
+    skill;302;yes
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;yes
+    skill;307;pno
+    skill;308;pno
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;no
+    skill;313;pno
+    skill;314;yes
+    skill;315;yes
+    skill;316;pno
+    skill;317;yes
+    skill;321;yes
+    skill;322;yes
+    skill;323;yes
+    skill;324;no
+    skill;334;yes
+    skill;335;yes
+    skill;341;yes
+    skill;342;yes
+    skill;343;no
+    skill;351;pno
+    skill;361;yes
+    skill;362;yes
+    skill;363;pno
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;pno
+    skill;405;pno
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;yes
+    skill;422;pno
+    skill;441;yes
+    skill;442;yes
+    skill;451;pno
+    skill;452;pno
+    skill;461;yes
+    skill;462;yes
+    manswer;101e;;incorrect
+    manswer;102d;0;correct
+    manswer;104b;;incorrect
+    manswer;105b;0;correct
+    manswer;106b;0;correct
+    manswer;107a;;incorrect
+    manswer;108b;;incorrect
+    manswer;109d;;incorrect
+    manswer;110b;0;correct
+    manswer;111a;0;correct
+    manswer;112c;0;correct
+    manswer;151e;0;correct
+    manswer;161d;0;correct
+    manswer;202a;0;correct
+    manswer;204d;;incorrect
+    manswer;211a;;incorrect
+    manswer;212e;0;correct
+    manswer;214a;;incorrect
+    manswer;113d;0;correct
+    manswer;215a;0;correct
+    manswer;251e;;incorrect
+    manswer;261e;;incorrect
+    manswer;262b;0;correct
+    manswer;302c;0;correct
+    manswer;312e;;incorrect
+    manswer;210e;;incorrect
+    manswer;314e;0;correct
+    manswer;315c;0;correct
+    manswer;317e;0;correct
+    manswer;361e;0;correct
+    manswer;461c;0;correct
+    manswer;213c;0;correct
+    manswer;221b;0;correct
+    manswer;321b;0;correct
+    manswer;322;0;correct
+    manswer;421e;0;correct
+    manswer;222b;;incorrect
+    manswer;223c;0;correct
+    manswer;324b;;incorrect
+    manswer;231b;0;correct
+    manswer;232d;0;correct
+    manswer;233b;0;correct
+    manswer;334b;0;correct
+    manswer;234d;0;correct
+    manswer;335a;0;correct
+    manswer;263d;0;correct
+    manswer;362e;0;correct
+    manswer;462b;0;correct
+    manswer;306e;0;correct
+    manswer;323e;0;correct
+    manswer;341b;0;correct
+    manswer;342e;0;correct
+    manswer;441e;0;correct
+    manswer;442a;0;correct
+    manswer;343c;;incorrect
+  </script>
+  <!--   Test 4 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;1
+    intro;date;17 7 2018
+    intro;total mark;100
+    intro;qq asked;83
+    intro;qq correct;83
+    marea;numbers;100
+    marea;powers;100
+    marea;basic algebra;100
+    marea;algebra methods;100
+    marea;equations;100
+    marea;algebra+calculus;100
+    marea;statistics;100
+    marea;miscellaneous;100
+    marea;graphs;100
+    marea;area+volume;100
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level1
+    intro;timeused;4
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;yes
+    skill;105;yes
+    skill;106;yes
+    skill;107;yes
+    skill;108;pyes
+    skill;109;yes
+    skill;110;yes
+    skill;111;yes
+    skill;112;yes
+    skill;113;pyes
+    skill;151;yes
+    skill;161;yes
+    skill;201;yes
+    skill;202;yes
+    skill;203;pyes
+    skill;204;yes
+    skill;205;yes
+    skill;206;pyes
+    skill;207;yes
+    skill;208;yes
+    skill;209;yes
+    skill;210;pyes
+    skill;211;yes
+    skill;212;yes
+    skill;213;yes
+    skill;214;yes
+    skill;215;yes
+    skill;216;yes
+    skill;221;yes
+    skill;222;yes
+    skill;223;yes
+    skill;231;yes
+    skill;232;yes
+    skill;233;yes
+    skill;234;yes
+    skill;251;yes
+    skill;261;yes
+    skill;262;yes
+    skill;263;yes
+    skill;301;yes
+    skill;302;yes
+    skill;303;pyes
+    skill;304;yes
+    skill;305;yes
+    skill;306;yes
+    skill;307;yes
+    skill;308;yes
+    skill;309;yes
+    skill;310;yes
+    skill;311;yes
+    skill;312;pyes
+    skill;313;yes
+    skill;314;yes
+    skill;315;yes
+    skill;316;yes
+    skill;317;yes
+    skill;321;yes
+    skill;322;yes
+    skill;323;yes
+    skill;324;yes
+    skill;334;yes
+    skill;335;yes
+    skill;341;yes
+    skill;342;yes
+    skill;343;yes
+    skill;351;yes
+    skill;361;yes
+    skill;362;yes
+    skill;363;yes
+    skill;401;yes
+    skill;402;yes
+    skill;403;yes
+    skill;404;yes
+    skill;405;yes
+    skill;406;yes
+    skill;407;yes
+    skill;408;yes
+    skill;409;yes
+    skill;410;yes
+    skill;411;yes
+    skill;412;yes
+    skill;421;yes
+    skill;422;yes
+    skill;441;yes
+    skill;442;yes
+    skill;451;yes
+    skill;452;yes
+    skill;461;yes
+    skill;462;yes
+    manswer;101b;0;correct
+    manswer;104b;0;correct
+    manswer;105e;0;correct
+    manswer;106b;0;correct
+    manswer;107a;0;correct
+    manswer;109e;0;correct
+    manswer;110e;0;correct
+    manswer;111d;0;correct
+    manswer;112a;0;correct
+    manswer;151a;0;correct
+    manswer;161d;0;correct
+    manswer;201a;0;correct
+    manswer;202b;0;correct
+    manswer;204b;0;correct
+    manswer;205c;0;correct
+    manswer;211e;0;correct
+    manswer;212d;0;correct
+    manswer;214b;0;correct
+    manswer;215a;0;correct
+    manswer;216d;0;correct
+    manswer;251c;0;correct
+    manswer;261e;0;correct
+    manswer;262d;0;correct
+    manswer;301d;0;correct
+    manswer;302d;0;correct
+    manswer;304a;0;correct
+    manswer;305c;0;correct
+    manswer;308e;0;correct
+    manswer;309b;0;correct
+    manswer;310a;0;correct
+    manswer;314d;0;correct
+    manswer;315a;0;correct
+    manswer;316e;0;correct
+    manswer;317b;0;correct
+    manswer;351a;0;correct
+    manswer;361d;0;correct
+    manswer;363b;0;correct
+    manswer;401e;0;correct
+    manswer;402a;0;correct
+    manswer;403a;0;correct
+    manswer;404a;0;correct
+    manswer;405b;0;correct
+    manswer;408a;0;correct
+    manswer;410d;0;correct
+    manswer;411d;0;correct
+    manswer;409a;0;correct
+    manswer;412a;0;correct
+    manswer;451b;0;correct
+    manswer;452b;0;correct
+    manswer;461a;0;correct
+    manswer;207e;0;correct
+    manswer;307b;0;correct
+    manswer;208b;0;correct
+    manswer;209b;0;correct
+    manswer;311b;0;correct
+    manswer;407e;0;correct
+    manswer;406c;0;correct
+    manswer;213e;0;correct
+    manswer;221a;0;correct
+    manswer;321a;0;correct
+    manswer;322;0;correct
+    manswer;421e;0;correct
+    manswer;222b;0;correct
+    manswer;422c;0;correct
+    manswer;223d;0;correct
+    manswer;324e;0;correct
+    manswer;231d;0;correct
+    manswer;232d;0;correct
+    manswer;233d;0;correct
+    manswer;334a;0;correct
+    manswer;234e;0;correct
+    manswer;335d;0;correct
+    manswer;263b;0;correct
+    manswer;362a;0;correct
+    manswer;462a;0;correct
+    manswer;306d;0;correct
+    manswer;313d;0;correct
+    manswer;323d;0;correct
+    manswer;341b;0;correct
+    manswer;342e;0;correct
+    manswer;441b;0;correct
+    manswer;442a;0;correct
+    manswer;343d;0;correct
+  </script>
+  <!--   Test 5 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Lev
+    intro;startlevel;1
+    intro;date;17 7 2018
+    intro;total mark;46
+    intro;qq asked;55
+    intro;qq correct;40
+    marea;numbers;41
+    marea;powers;30
+    marea;basic algebra;45
+    marea;algebra methods;0
+    marea;equations;25
+    marea;algebra+calculus;56
+    marea;statistics;100
+    marea;miscellaneous;67
+    marea;graphs;20
+    marea;area+volume;78
+    admin;name;Lev1
+    admin;group;all
+    admin;qual;level1
+    intro;timeused;2
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;yes
+    skill;103;pyes
+    skill;104;no
+    skill;105;yes
+    skill;106;yes
+    skill;107;no
+    skill;108;no
+    skill;109;no
+    skill;110;yes
+    skill;111;yes
+    skill;112;yes
+    skill;113;yes
+    skill;151;yes
+    skill;161;yes
+    skill;201;pno
+    skill;202;yes
+    skill;203;pyes
+    skill;204;no
+    skill;205;pno
+    skill;206;pno
+    skill;207;pno
+    skill;208;pno
+    skill;209;pno
+    skill;210;no
+    skill;211;no
+    skill;212;yes
+    skill;213;yes
+    skill;214;no
+    skill;215;yes
+    skill;216;pno
+    skill;221;yes
+    skill;222;no
+    skill;223;yes
+    skill;231;yes
+    skill;232;yes
+    skill;233;yes
+    skill;234;yes
+    skill;251;no
+    skill;261;no
+    skill;262;yes
+    skill;263;yes
+    skill;301;pno
+    skill;302;yes
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;yes
+    skill;307;pno
+    skill;308;pno
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;no
+    skill;313;pno
+    skill;314;yes
+    skill;315;yes
+    skill;316;pno
+    skill;317;yes
+    skill;321;yes
+    skill;322;yes
+    skill;323;yes
+    skill;324;no
+    skill;334;yes
+    skill;335;yes
+    skill;341;yes
+    skill;342;yes
+    skill;343;no
+    skill;351;pno
+    skill;361;yes
+    skill;362;yes
+    skill;363;pno
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;pno
+    skill;405;pno
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;yes
+    skill;422;pno
+    skill;441;yes
+    skill;442;yes
+    skill;451;pno
+    skill;452;pno
+    skill;461;yes
+    skill;462;yes
+    manswer;101e;;incorrect
+    manswer;102d;0;correct
+    manswer;104b;;incorrect
+    manswer;105b;0;correct
+    manswer;106b;0;correct
+    manswer;107a;;incorrect
+    manswer;108b;;incorrect
+    manswer;109d;;incorrect
+    manswer;110b;0;correct
+    manswer;111a;0;correct
+    manswer;112c;0;correct
+    manswer;151e;0;correct
+    manswer;161d;0;correct
+    manswer;202a;0;correct
+    manswer;204d;;incorrect
+    manswer;211a;;incorrect
+    manswer;212e;0;correct
+    manswer;214a;;incorrect
+    manswer;113d;0;correct
+    manswer;215a;0;correct
+    manswer;251e;;incorrect
+    manswer;261e;;incorrect
+    manswer;262b;0;correct
+    manswer;302c;0;correct
+    manswer;312e;;incorrect
+    manswer;210e;;incorrect
+    manswer;314e;0;correct
+    manswer;315c;0;correct
+    manswer;317e;0;correct
+    manswer;361e;0;correct
+    manswer;461c;0;correct
+    manswer;213c;0;correct
+    manswer;221b;0;correct
+    manswer;321b;0;correct
+    manswer;322;0;correct
+    manswer;421e;0;correct
+    manswer;222b;;incorrect
+    manswer;223c;0;correct
+    manswer;324b;;incorrect
+    manswer;231b;0;correct
+    manswer;232d;0;correct
+    manswer;233b;0;correct
+    manswer;334b;0;correct
+    manswer;234d;0;correct
+    manswer;335a;0;correct
+    manswer;263d;0;correct
+    manswer;362e;0;correct
+    manswer;462b;0;correct
+    manswer;306e;0;correct
+    manswer;323e;0;correct
+    manswer;341b;0;correct
+    manswer;342e;0;correct
+    manswer;441e;0;correct
+    manswer;442a;0;correct
+    manswer;343c;;incorrect
+  </script>
+  <!--   Test 6 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Lev
+    intro;startlevel;2
+    intro;date;17 7 2018
+    intro;total mark;60
+    intro;qq asked;57
+    intro;qq correct;39
+    marea;numbers;82
+    marea;powers;70
+    marea;basic algebra;73
+    marea;algebra methods;25
+    marea;equations;25
+    marea;algebra+calculus;56
+    marea;statistics;33
+    marea;miscellaneous;78
+    marea;graphs;20
+    marea;area+volume;78
+    admin;name;lev4
+    admin;group;all
+    admin;qual;level2
+    intro;timeused;2
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;pyes
+    skill;105;no
+    skill;106;pyes
+    skill;107;pyes
+    skill;108;pyes
+    skill;109;pyes
+    skill;110;pyes
+    skill;111;pyes
+    skill;112;pyes
+    skill;113;yes
+    skill;151;yes
+    skill;161;pyes
+    skill;201;yes
+    skill;202;no
+    skill;203;yes
+    skill;204;pyes
+    skill;205;yes
+    skill;206;pyes
+    skill;207;no
+    skill;208;yes
+    skill;209;no
+    skill;210;yes
+    skill;211;yes
+    skill;212;yes
+    skill;213;pyes
+    skill;214;no
+    skill;215;yes
+    skill;216;yes
+    skill;221;yes
+    skill;222;yes
+    skill;223;yes
+    skill;231;no
+    skill;232;yes
+    skill;233;yes
+    skill;234;no
+    skill;251;no
+    skill;261;yes
+    skill;262;yes
+    skill;263;yes
+    skill;301;yes
+    skill;302;pno
+    skill;303;yes
+    skill;304;yes
+    skill;305;yes
+    skill;306;pyes
+    skill;307;pno
+    skill;308;yes
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;pyes
+    skill;313;no
+    skill;314;yes
+    skill;315;yes
+    skill;316;pno
+    skill;317;no
+    skill;321;yes
+    skill;322;no
+    skill;323;no
+    skill;324;yes
+    skill;334;no
+    skill;335;pno
+    skill;341;yes
+    skill;342;yes
+    skill;343;yes
+    skill;351;pno
+    skill;361;no
+    skill;362;yes
+    skill;363;yes
+    skill;401;pno
+    skill;402;no
+    skill;403;no
+    skill;404;no
+    skill;405;yes
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;yes
+    skill;422;yes
+    skill;441;yes
+    skill;442;no
+    skill;451;pno
+    skill;452;pno
+    skill;461;pno
+    skill;462;yes
+    manswer;101d;0;correct
+    manswer;201a;0;correct
+    manswer;202e;;incorrect
+    manswer;105a;;incorrect
+    manswer;203a;0;correct
+    manswer;205e;0;correct
+    manswer;207d;;incorrect
+    manswer;209a;;incorrect
+    manswer;208c;0;correct
+    manswer;210e;0;correct
+    manswer;211d;0;correct
+    manswer;212b;0;correct
+    manswer;214a;;incorrect
+    manswer;113e;0;correct
+    manswer;215a;0;correct
+    manswer;216a;0;correct
+    manswer;221e;0;correct
+    manswer;223a;0;correct
+    manswer;231a;;incorrect
+    manswer;232e;0;correct
+    manswer;233a;0;correct
+    manswer;234a;;incorrect
+    manswer;251a;;incorrect
+    manswer;151a;0;correct
+    manswer;261d;0;correct
+    manswer;262d;0;correct
+    manswer;263c;0;correct
+    manswer;301b;0;correct
+    manswer;304c;0;correct
+    manswer;303d;0;correct
+    manswer;305d;0;correct
+    manswer;308a;0;correct
+    manswer;314b;0;correct
+    manswer;315c;0;correct
+    manswer;321e;0;correct
+    manswer;322;;incorrect
+    manswer;222e;0;correct
+    manswer;324a;0;correct
+    manswer;334a;;incorrect
+    manswer;361b;;incorrect
+    manswer;362b;0;correct
+    manswer;363d;0;correct
+    manswer;402a;;incorrect
+    manswer;403a;;incorrect
+    manswer;404c;;incorrect
+    manswer;405b;0;correct
+    manswer;421e;0;correct
+    manswer;422a;0;correct
+    manswer;462a;0;correct
+    manswer;313b;;incorrect
+    manswer;317b;;incorrect
+    manswer;323a;;incorrect
+    manswer;341a;0;correct
+    manswer;342d;0;correct
+    manswer;441d;0;correct
+    manswer;442a;;incorrect
+    manswer;343d;0;correct
+  </script>
+  <!--   Test 7 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;3
+    intro;date;17 7 2018
+    intro;total mark;61
+    intro;qq asked;56
+    intro;qq correct;29
+    marea;numbers;59
+    marea;powers;80
+    marea;basic algebra;82
+    marea;algebra methods;75
+    marea;equations;75
+    marea;algebra+calculus;56
+    marea;statistics;17
+    marea;miscellaneous;56
+    marea;graphs;40
+    marea;area+volume;44
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level3
+    intro;timeused;10
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;yes
+    skill;103;pyes
+    skill;104;no
+    skill;105;no
+    skill;106;pyes
+    skill;107;pyes
+    skill;108;pyes
+    skill;109;pyes
+    skill;110;pyes
+    skill;111;pyes
+    skill;112;pyes
+    skill;113;no
+    skill;151;pyes
+    skill;161;yes
+    skill;201;no
+    skill;202;no
+    skill;203;pyes
+    skill;204;pyes
+    skill;205;yes
+    skill;206;pyes
+    skill;207;yes
+    skill;208;pyes
+    skill;209;pyes
+    skill;210;pyes
+    skill;211;yes
+    skill;212;pyes
+    skill;213;pyes
+    skill;214;no
+    skill;215;yes
+    skill;216;pyes
+    skill;221;pyes
+    skill;222;pyes
+    skill;223;pyes
+    skill;231;no
+    skill;232;no
+    skill;233;no
+    skill;234;yes
+    skill;251;yes
+    skill;261;no
+    skill;262;no
+    skill;263;pyes
+    skill;301;no
+    skill;302;no
+    skill;303;no
+    skill;304;pyes
+    skill;305;yes
+    skill;306;pyes
+    skill;307;no
+    skill;308;yes
+    skill;309;yes
+    skill;310;yes
+    skill;311;pyes
+    skill;312;pyes
+    skill;313;yes
+    skill;314;yes
+    skill;315;yes
+    skill;316;no
+    skill;317;no
+    skill;321;no
+    skill;322;yes
+    skill;323;no
+    skill;324;yes
+    skill;334;no
+    skill;335;no
+    skill;341;pyes
+    skill;342;yes
+    skill;343;yes
+    skill;351;no
+    skill;361;no
+    skill;362;yes
+    skill;363;no
+    skill;401;pno
+    skill;402;yes
+    skill;403;yes
+    skill;404;yes
+    skill;405;yes
+    skill;406;yes
+    skill;407;yes
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;yes
+    skill;421;pno
+    skill;422;no
+    skill;441;no
+    skill;442;yes
+    skill;451;pno
+    skill;452;pno
+    skill;461;pno
+    skill;462;yes
+    manswer;101c;;incorrect
+    manswer;102b;0;correct
+    manswer;205d;0;correct
+    manswer;211e;0;correct
+    manswer;215b;0;correct
+    manswer;231a;;incorrect
+    manswer;232e;;incorrect
+    manswer;301d;;incorrect
+    manswer;201b;;incorrect
+    manswer;104b;;incorrect
+    manswer;302d;;incorrect
+    manswer;202e;;incorrect
+    manswer;105a;;incorrect
+    manswer;303d;;incorrect
+    manswer;305c;0;correct
+    manswer;307b;;incorrect
+    manswer;207b;0;correct
+    manswer;308a;0;correct
+    manswer;309a;0;correct
+    manswer;310b;0;correct
+    manswer;313a;0;correct
+    manswer;314c;0;correct
+    manswer;315d;0;correct
+    manswer;316e;;incorrect
+    manswer;214e;;incorrect
+    manswer;113e;;incorrect
+    manswer;317d;;incorrect
+    manswer;321c;;incorrect
+    manswer;322;0;correct
+    manswer;323d;;incorrect
+    manswer;324c;0;correct
+    manswer;334a;;incorrect
+    manswer;233a;;incorrect
+    manswer;335c;;incorrect
+    manswer;234a;00;correct
+    manswer;342b;0;correct
+    manswer;343c;0;correct
+    manswer;351a;;incorrect
+    manswer;251e;0;correct
+    manswer;361b;;incorrect
+    manswer;262c;;incorrect
+    manswer;362c;0;correct
+    manswer;363c;;incorrect
+    manswer;261c;;incorrect
+    manswer;161d;0;correct
+    manswer;404a;0;correct
+    manswer;405b;0;correct
+    manswer;412a;0;correct
+    manswer;462b;0;correct
+    manswer;402a;0;correct
+    manswer;403a;0;correct
+    manswer;407a;0;correct
+    manswer;406a;0;correct
+    manswer;422e;;incorrect
+    manswer;441e;;incorrect
+    manswer;442e;0;correct
+  </script>
+  <!--   Test 8 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;2
+    intro;date;17 7 2018
+    intro;total mark;21
+    intro;qq asked;48
+    intro;qq correct;15
+    marea;numbers;24
+    marea;powers;0
+    marea;basic algebra;0
+    marea;algebra methods;0
+    marea;equations;0
+    marea;algebra+calculus;11
+    marea;statistics;67
+    marea;miscellaneous;33
+    marea;graphs;40
+    marea;area+volume;56
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level2
+    intro;timeused;1
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;no
+    skill;103;no
+    skill;104;no
+    skill;105;no
+    skill;106;no
+    skill;107;pyes
+    skill;108;pyes
+    skill;109;yes
+    skill;110;no
+    skill;111;no
+    skill;112;no
+    skill;113;no
+    skill;151;pyes
+    skill;161;pyes
+    skill;201;no
+    skill;202;no
+    skill;203;no
+    skill;204;no
+    skill;205;no
+    skill;206;yes
+    skill;207;no
+    skill;208;no
+    skill;209;no
+    skill;210;no
+    skill;211;no
+    skill;212;no
+    skill;213;no
+    skill;214;no
+    skill;215;no
+    skill;216;no
+    skill;221;no
+    skill;222;no
+    skill;223;yes
+    skill;231;no
+    skill;232;yes
+    skill;233;yes
+    skill;234;yes
+    skill;251;yes
+    skill;261;yes
+    skill;262;yes
+    skill;263;yes
+    skill;301;pno
+    skill;302;pno
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;pno
+    skill;307;pno
+    skill;308;pno
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;pno
+    skill;313;pno
+    skill;314;pno
+    skill;315;pno
+    skill;316;pno
+    skill;317;pno
+    skill;321;pno
+    skill;322;pno
+    skill;323;yes
+    skill;324;yes
+    skill;334;yes
+    skill;335;no
+    skill;341;no
+    skill;342;pno
+    skill;343;yes
+    skill;351;no
+    skill;361;no
+    skill;362;no
+    skill;363;yes
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;pno
+    skill;405;pno
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;pno
+    skill;422;pno
+    skill;441;pno
+    skill;442;pno
+    skill;451;pno
+    skill;452;pno
+    skill;461;pno
+    skill;462;pno
+    manswer;101c;;incorrect
+    manswer;102b;;incorrect
+    manswer;201b;;incorrect
+    manswer;103e;;incorrect
+    manswer;104b;;incorrect
+    manswer;202e;;incorrect
+    manswer;105e;;incorrect
+    manswer;203d;;incorrect
+    manswer;204a;;incorrect
+    manswer;106a;;incorrect
+    manswer;205c;;incorrect
+    manswer;207e;;incorrect
+    manswer;209d;;incorrect
+    manswer;208a;;incorrect
+    manswer;210b;;incorrect
+    manswer;211c;;incorrect
+    manswer;110a;;incorrect
+    manswer;212a;;incorrect
+    manswer;111a;;incorrect
+    manswer;213a;;incorrect
+    manswer;214b;;incorrect
+    manswer;113d;;incorrect
+    manswer;215a;;incorrect
+    manswer;112c;;incorrect
+    manswer;216a;;incorrect
+    manswer;109a;0;correct
+    manswer;206a;0;correct
+    manswer;221e;;incorrect
+    manswer;222e;;incorrect
+    manswer;223c;0;correct
+    manswer;231e;;incorrect
+    manswer;232d;0;correct
+    manswer;233b;0;correct
+    manswer;234b;0;correct
+    manswer;251d;0;correct
+    manswer;261b;0;correct
+    manswer;262d;0;correct
+    manswer;263a;0;correct
+    manswer;324a;0;correct
+    manswer;334c;0;correct
+    manswer;335b;;incorrect
+    manswer;351c;;incorrect
+    manswer;361c;;incorrect
+    manswer;362e;;incorrect
+    manswer;363c;0;correct
+    manswer;323a;0;correct
+    manswer;341e;;incorrect
+    manswer;343d;0;correct
+  </script>
+  <!--   Test 9 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;1
+    intro;date;17 7 2018
+    intro;total mark;36
+    intro;qq asked;53
+    intro;qq correct;29
+    marea;numbers;59
+    marea;powers;40
+    marea;basic algebra;45
+    marea;algebra methods;12
+    marea;equations;25
+    marea;algebra+calculus;0
+    marea;statistics;17
+    marea;miscellaneous;33
+    marea;graphs;60
+    marea;area+volume;44
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level1
+    intro;timeused;1
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;no
+    skill;105;yes
+    skill;106;yes
+    skill;107;yes
+    skill;108;pyes
+    skill;109;yes
+    skill;110;yes
+    skill;111;yes
+    skill;112;no
+    skill;113;yes
+    skill;151;yes
+    skill;161;yes
+    skill;201;pno
+    skill;202;yes
+    skill;203;yes
+    skill;204;yes
+    skill;205;no
+    skill;206;pyes
+    skill;207;no
+    skill;208;no
+    skill;209;pno
+    skill;210;pno
+    skill;211;yes
+    skill;212;yes
+    skill;213;no
+    skill;214;pno
+    skill;215;pno
+    skill;216;yes
+    skill;221;no
+    skill;222;yes
+    skill;223;yes
+    skill;231;yes
+    skill;232;no
+    skill;233;no
+    skill;234;no
+    skill;251;yes
+    skill;261;no
+    skill;262;no
+    skill;263;yes
+    skill;301;pno
+    skill;302;no
+    skill;303;pno
+    skill;304;no
+    skill;305;pno
+    skill;306;yes
+    skill;307;pno
+    skill;308;yes
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;no
+    skill;313;pno
+    skill;314;yes
+    skill;315;yes
+    skill;316;pno
+    skill;317;no
+    skill;321;pno
+    skill;322;pno
+    skill;323;yes
+    skill;324;no
+    skill;334;pno
+    skill;335;pno
+    skill;341;no
+    skill;342;pno
+    skill;343;no
+    skill;351;yes
+    skill;361;pno
+    skill;362;yes
+    skill;363;pno
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;no
+    skill;405;no
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;pno
+    skill;422;no
+    skill;441;pno
+    skill;442;pno
+    skill;451;no
+    skill;452;no
+    skill;461;pno
+    skill;462;yes
+    manswer;101a;0;correct
+    manswer;104a;;incorrect
+    manswer;105b;0;correct
+    manswer;106b;0;correct
+    manswer;107b;0;correct
+    manswer;109b;0;correct
+    manswer;110b;0;correct
+    manswer;111d;0;correct
+    manswer;112d;;incorrect
+    manswer;113a;0;correct
+    manswer;151d;0;correct
+    manswer;161b;0;correct
+    manswer;202b;00;correct
+    manswer;204b;0;correct
+    manswer;205c;;incorrect
+    manswer;211d;00;correct
+    manswer;212b;0;correct
+    manswer;216d;0;correct
+    manswer;251e;000;correct
+    manswer;261b;;incorrect
+    manswer;262a;;incorrect
+    manswer;302a;;incorrect
+    manswer;304a;;incorrect
+    manswer;203c;00;correct
+    manswer;306c;00;correct
+    manswer;308e;0;correct
+    manswer;314d;0;correct
+    manswer;315b;0;correct
+    manswer;317e;;incorrect
+    manswer;351a;0;correct
+    manswer;404c;;incorrect
+    manswer;405a;;incorrect
+    manswer;312a;;incorrect
+    manswer;451b;;incorrect
+    manswer;452b;;incorrect
+    manswer;207b;;incorrect
+    manswer;208d;;incorrect
+    manswer;213c;;incorrect
+    manswer;221a;;incorrect
+    manswer;222a;0;correct
+    manswer;422e;;incorrect
+    manswer;223c;0;correct
+    manswer;324e;;incorrect
+    manswer;231c;0;correct
+    manswer;232e;;incorrect
+    manswer;233e;;incorrect
+    manswer;234e;;incorrect
+    manswer;263b;0;correct
+    manswer;362e;0;correct
+    manswer;462b;00;correct
+    manswer;323e;0;correct
+    manswer;341e;;incorrect
+    manswer;343d;;incorrect
+  </script>
+  <!--   Test 10 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;0
+    intro;date;17 7 2018
+    intro;total mark;34
+    intro;qq asked;52
+    intro;qq correct;31
+    marea;numbers;18
+    marea;powers;0
+    marea;basic algebra;45
+    marea;algebra methods;38
+    marea;equations;12
+    marea;algebra+calculus;33
+    marea;statistics;17
+    marea;miscellaneous;56
+    marea;graphs;80
+    marea;area+volume;67
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level0
+    intro;timeused;1
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;pno
+    skill;102;pno
+    skill;103;no
+    skill;104;no
+    skill;105;no
+    skill;106;no
+    skill;107;pno
+    skill;108;no
+    skill;109;yes
+    skill;110;yes
+    skill;111;yes
+    skill;112;yes
+    skill;113;yes
+    skill;151;yes
+    skill;161;yes
+    skill;201;pno
+    skill;202;pno
+    skill;203;pno
+    skill;204;pno
+    skill;205;pno
+    skill;206;pno
+    skill;207;pno
+    skill;208;pno
+    skill;209;pno
+    skill;210;no
+    skill;211;no
+    skill;212;no
+    skill;213;yes
+    skill;214;yes
+    skill;215;yes
+    skill;216;pno
+    skill;221;yes
+    skill;222;yes
+    skill;223;no
+    skill;231;yes
+    skill;232;no
+    skill;233;no
+    skill;234;no
+    skill;251;yes
+    skill;261;yes
+    skill;262;yes
+    skill;263;no
+    skill;301;pno
+    skill;302;pno
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;pno
+    skill;307;pno
+    skill;308;pno
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;yes
+    skill;313;yes
+    skill;314;pno
+    skill;315;pno
+    skill;316;yes
+    skill;317;no
+    skill;321;yes
+    skill;322;no
+    skill;323;yes
+    skill;324;pno
+    skill;334;pno
+    skill;335;pno
+    skill;341;yes
+    skill;342;no
+    skill;343;yes
+    skill;351;yes
+    skill;361;yes
+    skill;362;pno
+    skill;363;yes
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;pno
+    skill;405;pno
+    skill;406;pno
+    skill;407;pno
+    skill;408;no
+    skill;409;pno
+    skill;410;yes
+    skill;411;no
+    skill;412;pno
+    skill;421;yes
+    skill;422;no
+    skill;441;yes
+    skill;442;no
+    skill;451;yes
+    skill;452;no
+    skill;461;yes
+    skill;462;pno
+    manswer;103a;;incorrect
+    manswer;104a;;incorrect
+    manswer;105d;;incorrect
+    manswer;106b;;incorrect
+    manswer;108a;;incorrect
+    manswer;109d;00;correct
+    manswer;110a;0;correct
+    manswer;211a;;incorrect
+    manswer;312e;0;correct
+    manswer;313d;00;correct
+    manswer;408e;;incorrect
+    manswer;317e;;incorrect
+    manswer;410b;0;correct
+    manswer;111b;0;correct
+    manswer;212d;;incorrect
+    manswer;112c;0;correct
+    manswer;210d;;incorrect
+    manswer;214e;0;correct
+    manswer;215b;0;correct
+    manswer;316c;0;correct
+    manswer;411d;;incorrect
+    manswer;113d;0;correct
+    manswer;151e;0;correct
+    manswer;251a;0;correct
+    manswer;351e;0;correct
+    manswer;451a;0;correct
+    manswer;452b;;incorrect
+    manswer;161d;0;correct
+    manswer;261b;0;correct
+    manswer;262d;0;correct
+    manswer;361a;0;correct
+    manswer;363c;00;correct
+    manswer;461b;00;correct
+    manswer;213a;0;correct
+    manswer;221e;0;correct
+    manswer;321a;0;correct
+    manswer;322;;incorrect
+    manswer;421a;0;correct
+    manswer;222b;00;correct
+    manswer;422a;;incorrect
+    manswer;223d;;incorrect
+    manswer;231d;0;correct
+    manswer;232e;;incorrect
+    manswer;233e;;incorrect
+    manswer;234c;;incorrect
+    manswer;263e;;incorrect
+    manswer;323b;00;correct
+    manswer;341b;0;correct
+    manswer;342c;;incorrect
+    manswer;441c;0;correct
+    manswer;442d;;incorrect
+    manswer;343a;0;correct
+  </script>
+  <!--   Test 11 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;1
+    intro;date;17 7 2018
+    intro;total mark;93
+    intro;qq asked;80
+    intro;qq correct;78
+    marea;numbers;100
+    marea;powers;90
+    marea;basic algebra;82
+    marea;algebra methods;75
+    marea;equations;88
+    marea;algebra+calculus;100
+    marea;statistics;100
+    marea;miscellaneous;100
+    marea;graphs;100
+    marea;area+volume;100
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level1
+    intro;timeused;5
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;yes
+    skill;105;yes
+    skill;106;yes
+    skill;107;yes
+    skill;108;pyes
+    skill;109;yes
+    skill;110;yes
+    skill;111;yes
+    skill;112;yes
+    skill;113;pyes
+    skill;151;yes
+    skill;161;yes
+    skill;201;yes
+    skill;202;yes
+    skill;203;pyes
+    skill;204;yes
+    skill;205;yes
+    skill;206;pyes
+    skill;207;yes
+    skill;208;no
+    skill;209;pno
+    skill;210;pyes
+    skill;211;yes
+    skill;212;yes
+    skill;213;yes
+    skill;214;yes
+    skill;215;yes
+    skill;216;yes
+    skill;221;yes
+    skill;222;yes
+    skill;223;yes
+    skill;231;yes
+    skill;232;yes
+    skill;233;yes
+    skill;234;yes
+    skill;251;yes
+    skill;261;yes
+    skill;262;yes
+    skill;263;yes
+    skill;301;yes
+    skill;302;yes
+    skill;303;yes
+    skill;304;yes
+    skill;305;yes
+    skill;306;yes
+    skill;307;yes
+    skill;308;yes
+    skill;309;yes
+    skill;310;yes
+    skill;311;pno
+    skill;312;pyes
+    skill;313;yes
+    skill;314;yes
+    skill;315;yes
+    skill;316;yes
+    skill;317;yes
+    skill;321;yes
+    skill;322;yes
+    skill;323;yes
+    skill;324;yes
+    skill;334;yes
+    skill;335;yes
+    skill;341;yes
+    skill;342;yes
+    skill;343;yes
+    skill;351;yes
+    skill;361;yes
+    skill;362;yes
+    skill;363;yes
+    skill;401;no
+    skill;402;yes
+    skill;403;yes
+    skill;404;yes
+    skill;405;yes
+    skill;406;pno
+    skill;407;pno
+    skill;408;yes
+    skill;409;yes
+    skill;410;yes
+    skill;411;yes
+    skill;412;yes
+    skill;421;yes
+    skill;422;yes
+    skill;441;yes
+    skill;442;yes
+    skill;451;yes
+    skill;452;yes
+    skill;461;yes
+    skill;462;yes
+    manswer;101b;0;correct
+    manswer;104b;0;correct
+    manswer;105a;0;correct
+    manswer;106b;0;correct
+    manswer;107a;0;correct
+    manswer;109a;0;correct
+    manswer;110a;0;correct
+    manswer;111a;0;correct
+    manswer;112a;0;correct
+    manswer;151c;0;correct
+    manswer;161c;0;correct
+    manswer;201a;0;correct
+    manswer;202a;0;correct
+    manswer;204c;0;correct
+    manswer;205d;0;correct
+    manswer;211e;0;correct
+    manswer;212a;0;correct
+    manswer;214e;0;correct
+    manswer;215b;0;correct
+    manswer;216a;0;correct
+    manswer;251e;0;correct
+    manswer;261c;0;correct
+    manswer;262b;0;correct
+    manswer;301c;0;correct
+    manswer;302a;0;correct
+    manswer;304c;0;correct
+    manswer;305a;0;correct
+    manswer;308b;0;correct
+    manswer;309b;0;correct
+    manswer;310c;0;correct
+    manswer;314d;0;correct
+    manswer;315b;0;correct
+    manswer;316d;0;correct
+    manswer;317b;0;correct
+    manswer;351c;0;correct
+    manswer;361c;0;correct
+    manswer;363d;0;correct
+    manswer;401e;;incorrect
+    manswer;303c;0;correct
+    manswer;402c;0;correct
+    manswer;403c;0;correct
+    manswer;404c;0;correct
+    manswer;405a;0;correct
+    manswer;408d;0;correct
+    manswer;410a;0;correct
+    manswer;411d;0;correct
+    manswer;409b;0;correct
+    manswer;412b;0;correct
+    manswer;451b;0;correct
+    manswer;452a;0;correct
+    manswer;461b;0;correct
+    manswer;207b;0;correct
+    manswer;307b;0;correct
+    manswer;208e;dont know;dkincorrect
+    manswer;213b;0;correct
+    manswer;221d;0;correct
+    manswer;321b;0;correct
+    manswer;322;0;correct
+    manswer;421b;0;correct
+    manswer;222c;0;correct
+    manswer;422b;0;correct
+    manswer;223d;0;correct
+    manswer;324e;0;correct
+    manswer;231d;0;correct
+    manswer;232d;0;correct
+    manswer;233d;0;correct
+    manswer;334b;0;correct
+    manswer;234a;0;correct
+    manswer;335d;0;correct
+    manswer;263b;0;correct
+    manswer;362e;0;correct
+    manswer;462b;0;correct
+    manswer;306b;0;correct
+    manswer;313a;0;correct
+    manswer;323d;0;correct
+    manswer;341e;0;correct
+    manswer;342c;0;correct
+    manswer;441b;0;correct
+    manswer;442b;0;correct
+    manswer;343e;0;correct
+  </script>
+  <!--   Test 12 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;3
+    intro;date;17 7 2018
+    intro;total mark;100
+    intro;qq asked;50
+    intro;qq correct;50
+    marea;numbers;100
+    marea;powers;100
+    marea;basic algebra;100
+    marea;algebra methods;100
+    marea;equations;100
+    marea;algebra+calculus;100
+    marea;statistics;100
+    marea;miscellaneous;100
+    marea;graphs;100
+    marea;area+volume;100
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level3
+    intro;timeused;3
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;pyes
+    skill;105;pyes
+    skill;106;pyes
+    skill;107;pyes
+    skill;108;pyes
+    skill;109;pyes
+    skill;110;pyes
+    skill;111;pyes
+    skill;112;pyes
+    skill;113;pyes
+    skill;151;pyes
+    skill;161;pyes
+    skill;201;pyes
+    skill;202;pyes
+    skill;203;pyes
+    skill;204;pyes
+    skill;205;yes
+    skill;206;pyes
+    skill;207;pyes
+    skill;208;pyes
+    skill;209;pyes
+    skill;210;pyes
+    skill;211;yes
+    skill;212;pyes
+    skill;213;pyes
+    skill;214;pyes
+    skill;215;yes
+    skill;216;pyes
+    skill;221;pyes
+    skill;222;pyes
+    skill;223;pyes
+    skill;231;yes
+    skill;232;yes
+    skill;233;pyes
+    skill;234;pyes
+    skill;251;pyes
+    skill;261;pyes
+    skill;262;pyes
+    skill;263;pyes
+    skill;301;yes
+    skill;302;yes
+    skill;303;pyes
+    skill;304;pyes
+    skill;305;yes
+    skill;306;pyes
+    skill;307;yes
+    skill;308;yes
+    skill;309;yes
+    skill;310;yes
+    skill;311;pyes
+    skill;312;pyes
+    skill;313;yes
+    skill;314;yes
+    skill;315;yes
+    skill;316;yes
+    skill;317;yes
+    skill;321;yes
+    skill;322;yes
+    skill;323;yes
+    skill;324;yes
+    skill;334;yes
+    skill;335;yes
+    skill;341;pyes
+    skill;342;yes
+    skill;343;yes
+    skill;351;yes
+    skill;361;yes
+    skill;362;yes
+    skill;363;yes
+    skill;401;yes
+    skill;402;yes
+    skill;403;yes
+    skill;404;yes
+    skill;405;yes
+    skill;406;yes
+    skill;407;yes
+    skill;408;yes
+    skill;409;yes
+    skill;410;yes
+    skill;411;yes
+    skill;412;yes
+    skill;421;yes
+    skill;422;yes
+    skill;441;yes
+    skill;442;yes
+    skill;451;yes
+    skill;452;yes
+    skill;461;yes
+    skill;462;yes
+    manswer;101a;0;correct
+    manswer;205e;0;correct
+    manswer;211b;0;correct
+    manswer;215a;0;correct
+    manswer;231c;0;correct
+    manswer;232b;0;correct
+    manswer;301e;0;correct
+    manswer;302c;0;correct
+    manswer;305a;0;correct
+    manswer;307c;0;correct
+    manswer;308c;0;correct
+    manswer;309b;0;correct
+    manswer;310a;0;correct
+    manswer;313b;0;correct
+    manswer;314c;0;correct
+    manswer;315d;0;correct
+    manswer;316e;0;correct
+    manswer;317c;0;correct
+    manswer;321b;0;correct
+    manswer;322;0;correct
+    manswer;323c;0;correct
+    manswer;324b;0;correct
+    manswer;334d;0;correct
+    manswer;335b;0;correct
+    manswer;342c;0;correct
+    manswer;343e;0;correct
+    manswer;351c;0;correct
+    manswer;361e;0;correct
+    manswer;362b;0;correct
+    manswer;363c;0;correct
+    manswer;401d;0;correct
+    manswer;404e;0;correct
+    manswer;405a;0;correct
+    manswer;408b;0;correct
+    manswer;411d;0;correct
+    manswer;409a;0;correct
+    manswer;412b;0;correct
+    manswer;421e;0;correct
+    manswer;451a;0;correct
+    manswer;452b;0;correct
+    manswer;461e;0;correct
+    manswer;462a;0;correct
+    manswer;402d;0;correct
+    manswer;403e;0;correct
+    manswer;407b;0;correct
+    manswer;406b;0;correct
+    manswer;410b;0;correct
+    manswer;422d;0;correct
+    manswer;441a;0;correct
+    manswer;442b;0;correct
+  </script>
+  <!--   Test 13 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;3
+    intro;date;17 7 2018
+    intro;total mark;0
+    intro;qq asked;72
+    intro;qq correct;0
+    marea;numbers;0
+    marea;powers;0
+    marea;basic algebra;0
+    marea;algebra methods;0
+    marea;equations;0
+    marea;algebra+calculus;0
+    marea;statistics;0
+    marea;miscellaneous;0
+    marea;graphs;0
+    marea;area+volume;0
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level3
+    intro;timeused;1
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;no
+    skill;103;no
+    skill;104;no
+    skill;105;no
+    skill;106;no
+    skill;107;no
+    skill;108;no
+    skill;109;no
+    skill;110;no
+    skill;111;no
+    skill;112;no
+    skill;113;no
+    skill;151;no
+    skill;161;no
+    skill;201;no
+    skill;202;no
+    skill;203;no
+    skill;204;no
+    skill;205;no
+    skill;206;no
+    skill;207;no
+    skill;208;no
+    skill;209;no
+    skill;210;no
+    skill;211;no
+    skill;212;no
+    skill;213;no
+    skill;214;no
+    skill;215;no
+    skill;216;no
+    skill;221;no
+    skill;222;no
+    skill;223;no
+    skill;231;no
+    skill;232;no
+    skill;233;no
+    skill;234;no
+    skill;251;no
+    skill;261;no
+    skill;262;no
+    skill;263;no
+    skill;301;no
+    skill;302;no
+    skill;303;no
+    skill;304;no
+    skill;305;no
+    skill;306;no
+    skill;307;no
+    skill;308;no
+    skill;309;no
+    skill;310;no
+    skill;311;no
+    skill;312;no
+    skill;313;no
+    skill;314;no
+    skill;315;no
+    skill;316;no
+    skill;317;no
+    skill;321;no
+    skill;322;no
+    skill;323;no
+    skill;324;no
+    skill;334;no
+    skill;335;no
+    skill;341;no
+    skill;342;no
+    skill;343;no
+    skill;351;no
+    skill;361;no
+    skill;362;no
+    skill;363;no
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;pno
+    skill;405;pno
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;pno
+    skill;422;pno
+    skill;441;pno
+    skill;442;pno
+    skill;451;pno
+    skill;452;pno
+    skill;461;pno
+    skill;462;pno
+    manswer;101d;;incorrect
+    manswer;102b;;incorrect
+    manswer;205b;;incorrect
+    manswer;211d;;incorrect
+    manswer;215b;;incorrect
+    manswer;231a;;incorrect
+    manswer;232e;;incorrect
+    manswer;301b;;incorrect
+    manswer;201a;;incorrect
+    manswer;103c;;incorrect
+    manswer;104a;;incorrect
+    manswer;302a;;incorrect
+    manswer;202b;;incorrect
+    manswer;105b;;incorrect
+    manswer;303e;;incorrect
+    manswer;305e;;incorrect
+    manswer;304c;;incorrect
+    manswer;204b;;incorrect
+    manswer;306c;;incorrect
+    manswer;203d;;incorrect
+    manswer;106c;;incorrect
+    manswer;307c;;incorrect
+    manswer;207b;;incorrect
+    manswer;308a;;incorrect
+    manswer;216a;;incorrect
+    manswer;109e;;incorrect
+    manswer;206c;;incorrect
+    manswer;107a;;incorrect
+    manswer;309b;;incorrect
+    manswer;310d;;incorrect
+    manswer;311d;;incorrect
+    manswer;209d;;incorrect
+    manswer;208a;;incorrect
+    manswer;108b;;incorrect
+    manswer;313a;;incorrect
+    manswer;312b;;incorrect
+    manswer;210a;;incorrect
+    manswer;314a;;incorrect
+    manswer;315d;;incorrect
+    manswer;212e;;incorrect
+    manswer;111a;;incorrect
+    manswer;213a;;incorrect
+    manswer;316c;;incorrect
+    manswer;214e;;incorrect
+    manswer;112a;;incorrect
+    manswer;113c;;incorrect
+    manswer;317d;;incorrect
+    manswer;110a;;incorrect
+    manswer;321e;;incorrect
+    manswer;322;;incorrect
+    manswer;221b;;incorrect
+    manswer;222a;;incorrect
+    manswer;323a;;incorrect
+    manswer;324d;;incorrect
+    manswer;223c;;incorrect
+    manswer;334c;;incorrect
+    manswer;233e;;incorrect
+    manswer;335d;;incorrect
+    manswer;234a;;incorrect
+    manswer;342a;;incorrect
+    manswer;341d;;incorrect
+    manswer;343b;;incorrect
+    manswer;351a;;incorrect
+    manswer;251a;;incorrect
+    manswer;151c;;incorrect
+    manswer;361d;;incorrect
+    manswer;262d;;incorrect
+    manswer;362b;;incorrect
+    manswer;263d;;incorrect
+    manswer;363d;;incorrect
+    manswer;261c;;incorrect
+    manswer;161e;;incorrect
+  </script>
+  <!--   Test 14 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;1
+    intro;date;17 7 2018
+    intro;total mark;0
+    intro;qq asked;27
+    intro;qq correct;0
+    marea;numbers;0
+    marea;powers;0
+    marea;basic algebra;0
+    marea;algebra methods;0
+    marea;equations;0
+    marea;algebra+calculus;0
+    marea;statistics;0
+    marea;miscellaneous;0
+    marea;graphs;0
+    marea;area+volume;0
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level1
+    intro;timeused;0
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;no
+    skill;103;no
+    skill;104;no
+    skill;105;no
+    skill;106;no
+    skill;107;no
+    skill;108;no
+    skill;109;no
+    skill;110;no
+    skill;111;no
+    skill;112;no
+    skill;113;no
+    skill;151;no
+    skill;161;no
+    skill;201;pno
+    skill;202;pno
+    skill;203;pno
+    skill;204;pno
+    skill;205;pno
+    skill;206;pno
+    skill;207;pno
+    skill;208;pno
+    skill;209;pno
+    skill;210;pno
+    skill;211;pno
+    skill;212;pno
+    skill;213;no
+    skill;214;pno
+    skill;215;pno
+    skill;216;pno
+    skill;221;no
+    skill;222;no
+    skill;223;no
+    skill;231;no
+    skill;232;no
+    skill;233;no
+    skill;234;no
+    skill;251;pno
+    skill;261;pno
+    skill;262;pno
+    skill;263;no
+    skill;301;pno
+    skill;302;pno
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;pno
+    skill;307;pno
+    skill;308;pno
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;pno
+    skill;313;pno
+    skill;314;pno
+    skill;315;pno
+    skill;316;pno
+    skill;317;pno
+    skill;321;pno
+    skill;322;pno
+    skill;323;no
+    skill;324;pno
+    skill;334;pno
+    skill;335;pno
+    skill;341;no
+    skill;342;pno
+    skill;343;no
+    skill;351;pno
+    skill;361;pno
+    skill;362;pno
+    skill;363;pno
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;pno
+    skill;405;pno
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;pno
+    skill;422;pno
+    skill;441;pno
+    skill;442;pno
+    skill;451;pno
+    skill;452;pno
+    skill;461;pno
+    skill;462;pno
+    manswer;101e;;incorrect
+    manswer;102d;;incorrect
+    manswer;103a;;incorrect
+    manswer;104a;;incorrect
+    manswer;105b;;incorrect
+    manswer;106a;;incorrect
+    manswer;107a;;incorrect
+    manswer;108a;;incorrect
+    manswer;109a;;incorrect
+    manswer;110c;;incorrect
+    manswer;111e;;incorrect
+    manswer;112e;;incorrect
+    manswer;113d;;incorrect
+    manswer;151c;;incorrect
+    manswer;161c;;incorrect
+    manswer;213d;;incorrect
+    manswer;221d;;incorrect
+    manswer;222c;;incorrect
+    manswer;223e;;incorrect
+    manswer;231a;;incorrect
+    manswer;232a;;incorrect
+    manswer;233c;;incorrect
+    manswer;234b;;incorrect
+    manswer;263b;;incorrect
+    manswer;323d;;incorrect
+    manswer;341d;;incorrect
+    manswer;343e;;incorrect
+  </script>
+  <!--   Test 15 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;2
+    intro;date;17 7 2018
+    intro;total mark;0
+    intro;qq asked;45
+    intro;qq correct;0
+    marea;numbers;0
+    marea;powers;0
+    marea;basic algebra;0
+    marea;algebra methods;0
+    marea;equations;0
+    marea;algebra+calculus;0
+    marea;statistics;0
+    marea;miscellaneous;0
+    marea;graphs;0
+    marea;area+volume;0
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level2
+    intro;timeused;0
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;no
+    skill;102;no
+    skill;103;no
+    skill;104;no
+    skill;105;no
+    skill;106;no
+    skill;107;no
+    skill;108;no
+    skill;109;no
+    skill;110;no
+    skill;111;no
+    skill;112;no
+    skill;113;no
+    skill;151;no
+    skill;161;no
+    skill;201;no
+    skill;202;no
+    skill;203;no
+    skill;204;no
+    skill;205;no
+    skill;206;no
+    skill;207;no
+    skill;208;no
+    skill;209;no
+    skill;210;no
+    skill;211;no
+    skill;212;no
+    skill;213;no
+    skill;214;no
+    skill;215;no
+    skill;216;no
+    skill;221;no
+    skill;222;no
+    skill;223;no
+    skill;231;no
+    skill;232;no
+    skill;233;no
+    skill;234;no
+    skill;251;no
+    skill;261;no
+    skill;262;no
+    skill;263;no
+    skill;301;pno
+    skill;302;pno
+    skill;303;pno
+    skill;304;pno
+    skill;305;pno
+    skill;306;pno
+    skill;307;pno
+    skill;308;pno
+    skill;309;pno
+    skill;310;pno
+    skill;311;pno
+    skill;312;pno
+    skill;313;pno
+    skill;314;pno
+    skill;315;pno
+    skill;316;pno
+    skill;317;pno
+    skill;321;pno
+    skill;322;pno
+    skill;323;no
+    skill;324;pno
+    skill;334;pno
+    skill;335;pno
+    skill;341;no
+    skill;342;pno
+    skill;343;no
+    skill;351;pno
+    skill;361;pno
+    skill;362;pno
+    skill;363;pno
+    skill;401;pno
+    skill;402;pno
+    skill;403;pno
+    skill;404;pno
+    skill;405;pno
+    skill;406;pno
+    skill;407;pno
+    skill;408;pno
+    skill;409;pno
+    skill;410;pno
+    skill;411;pno
+    skill;412;pno
+    skill;421;pno
+    skill;422;pno
+    skill;441;pno
+    skill;442;pno
+    skill;451;pno
+    skill;452;pno
+    skill;461;pno
+    skill;462;pno
+    manswer;101c;;incorrect
+    manswer;102d;;incorrect
+    manswer;201a;;incorrect
+    manswer;103b;;incorrect
+    manswer;104a;;incorrect
+    manswer;202a;;incorrect
+    manswer;105a;;incorrect
+    manswer;203d;;incorrect
+    manswer;204c;;incorrect
+    manswer;106d;;incorrect
+    manswer;205d;;incorrect
+    manswer;207a;;incorrect
+    manswer;209e;;incorrect
+    manswer;208a;;incorrect
+    manswer;210e;;incorrect
+    manswer;211a;;incorrect
+    manswer;110b;;incorrect
+    manswer;212a;;incorrect
+    manswer;111d;;incorrect
+    manswer;213d;;incorrect
+    manswer;214c;;incorrect
+    manswer;113c;;incorrect
+    manswer;215a;;incorrect
+    manswer;112a;;incorrect
+    manswer;216b;;incorrect
+    manswer;109c;;incorrect
+    manswer;206b;;incorrect
+    manswer;107a;;incorrect
+    manswer;108b;;incorrect
+    manswer;221e;;incorrect
+    manswer;222d;;incorrect
+    manswer;223e;;incorrect
+    manswer;231c;;incorrect
+    manswer;232a;;incorrect
+    manswer;233c;;incorrect
+    manswer;234e;;incorrect
+    manswer;251c;;incorrect
+    manswer;151b;;incorrect
+    manswer;261b;;incorrect
+    manswer;262a;;incorrect
+    manswer;161b;;incorrect
+    manswer;263b;;incorrect
+    manswer;323b;;incorrect
+    manswer;341e;;incorrect
+    manswer;343a;;incorrect
+  </script>
+  <!--   Test 16 -->
+  <script type="text/diagnosysTranscript">
+    intro;surname;Fullnet
+    intro;startlevel;2
+    intro;date;17 7 2018
+    intro;total mark;98
+    intro;qq asked;69
+    intro;qq correct;68
+    marea;numbers;100
+    marea;powers;100
+    marea;basic algebra;100
+    marea;algebra methods;100
+    marea;equations;100
+    marea;algebra+calculus;100
+    marea;statistics;100
+    marea;miscellaneous;100
+    marea;graphs;100
+    marea;area+volume;78
+    admin;name;fullNet
+    admin;group;all
+    admin;qual;level2
+    intro;timeused;2
+    intro;lives;0
+    intro;livesused;0
+    intro;livessucc;0
+    skill;101;yes
+    skill;102;pyes
+    skill;103;pyes
+    skill;104;pyes
+    skill;105;pyes
+    skill;106;pyes
+    skill;107;pyes
+    skill;108;pyes
+    skill;109;pyes
+    skill;110;pyes
+    skill;111;pyes
+    skill;112;pyes
+    skill;113;pyes
+    skill;151;pyes
+    skill;161;pyes
+    skill;201;yes
+    skill;202;yes
+    skill;203;pyes
+    skill;204;yes
+    skill;205;yes
+    skill;206;pyes
+    skill;207;yes
+    skill;208;pyes
+    skill;209;yes
+    skill;210;pyes
+    skill;211;yes
+    skill;212;pyes
+    skill;213;yes
+    skill;214;yes
+    skill;215;yes
+    skill;216;yes
+    skill;221;yes
+    skill;222;pyes
+    skill;223;yes
+    skill;231;yes
+    skill;232;yes
+    skill;233;yes
+    skill;234;yes
+    skill;251;yes
+    skill;261;no
+    skill;262;yes
+    skill;263;yes
+    skill;301;yes
+    skill;302;yes
+    skill;303;pyes
+    skill;304;yes
+    skill;305;yes
+    skill;306;yes
+    skill;307;yes
+    skill;308;yes
+    skill;309;yes
+    skill;310;yes
+    skill;311;yes
+    skill;312;yes
+    skill;313;yes
+    skill;314;yes
+    skill;315;pyes
+    skill;316;yes
+    skill;317;yes
+    skill;321;yes
+    skill;322;yes
+    skill;323;yes
+    skill;324;yes
+    skill;334;yes
+    skill;335;yes
+    skill;341;yes
+    skill;342;yes
+    skill;343;yes
+    skill;351;yes
+    skill;361;yes
+    skill;362;yes
+    skill;363;pno
+    skill;401;yes
+    skill;402;yes
+    skill;403;yes
+    skill;404;yes
+    skill;405;yes
+    skill;406;yes
+    skill;407;yes
+    skill;408;yes
+    skill;409;yes
+    skill;410;yes
+    skill;411;yes
+    skill;412;yes
+    skill;421;yes
+    skill;422;yes
+    skill;441;yes
+    skill;442;yes
+    skill;451;yes
+    skill;452;yes
+    skill;461;yes
+    skill;462;yes
+    manswer;101b;0;correct
+    manswer;201b;0;correct
+    manswer;202d;0;correct
+    manswer;204a;0;correct
+    manswer;205e;0;correct
+    manswer;207c;0;correct
+    manswer;209a;0;correct
+    manswer;211e;0;correct
+    manswer;213b;0;correct
+    manswer;214c;0;correct
+    manswer;215a;0;correct
+    manswer;216d;0;correct
+    manswer;221c;0;correct
+    manswer;223b;0;correct
+    manswer;231d;0;correct
+    manswer;232d;0;correct
+    manswer;233d;0;correct
+    manswer;234a;0;correct
+    manswer;251b;0;correct
+    manswer;261e;;incorrect
+    manswer;262a;0;correct
+    manswer;263a;0;correct
+    manswer;301c;0;correct
+    manswer;302e;0;correct
+    manswer;304a;0;correct
+    manswer;305b;0;correct
+    manswer;307d;0;correct
+    manswer;308e;0;correct
+    manswer;309a;0;correct
+    manswer;311b;0;correct
+    manswer;310c;0;correct
+    manswer;316b;0;correct
+    manswer;321c;0;correct
+    manswer;322;0;correct
+    manswer;324b;0;correct
+    manswer;334e;0;correct
+    manswer;335d;0;correct
+    manswer;351e;0;correct
+    manswer;361c;0;correct
+    manswer;362e;0;correct
+    manswer;401a;0;correct
+    manswer;402d;0;correct
+    manswer;403c;0;correct
+    manswer;404d;00;correct
+    manswer;405a;0;correct
+    manswer;407e;0;correct
+    manswer;406a;0;correct
+    manswer;410c;0;correct
+    manswer;411d;0;correct
+    manswer;409b;0;correct
+    manswer;412e;0;correct
+    manswer;421e;0;correct
+    manswer;451b;0;correct
+    manswer;452a;0;correct
+    manswer;461b;0;correct
+    manswer;462b;0;correct
+    manswer;306b;0;correct
+    manswer;312d;0;correct
+    manswer;313e;0;correct
+    manswer;408b;0;correct
+    manswer;314e;0;correct
+    manswer;317c;0;correct
+    manswer;323b;0;correct
+    manswer;341d;0;correct
+    manswer;342c;0;correct
+    manswer;441b;0;correct
+    manswer;442b;0;correct
+    manswer;343a;0;correct
+    manswer;422d;0;correct
+  </script>
+  <!--   Test 17 -->
+  
+
+  
 </body>
